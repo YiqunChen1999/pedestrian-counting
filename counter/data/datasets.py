@@ -66,6 +66,16 @@ class DHDTrafficDataset(CocoDataset):
             3: "MRAll", 
         }
 
+    def _count_num_bboxes(img: str, predictions: List[Dict]) -> int:
+            return sum([img == p["id"] for p in predictions])
+
+    def count_num_bboxes(self, predictions: List[Dict]):
+        num_preds_per_img = {}
+        img_ids = set([p["id"] for p in predictions])
+        for idx in img_ids:
+            num_preds_per_img[idx] = self._count_num_bboxes(idx, predictions)
+        return num_preds_per_img
+
     def calc_miss_rate(
         self, 
         results: List[Union[List, Tuple, Dict]], 
@@ -159,6 +169,8 @@ class DHDTrafficDataset(CocoDataset):
         allowed_metrics = [
             "bbox", "segm", "proposal", "proposal_fast", "miss_rate"
         ]
+        det_metrics = metrics
+        eval_results = {}
         for metric in metrics:
             if metric not in allowed_metrics:
                 raise KeyError(f"metric {metric} is not supported")
@@ -169,25 +181,28 @@ class DHDTrafficDataset(CocoDataset):
         result_files, tmp_dir = self.format_results(results, jsonfile_prefix)
         if "miss_rate" in metrics:
             result_files["miss_rate"] = result_files["bbox"]
-            eval_results = self.calc_miss_rate(
-                results, 
-                result_files, 
-                coco_gt, 
-                "miss_rate", 
-                logger, 
-                classwise,
-                proposal_nums, 
-                iou_thrs,
-                metric_items
+            eval_results.update(
+                self.calc_miss_rate(
+                    results, 
+                    result_files, 
+                    coco_gt, 
+                    "miss_rate", 
+                    logger, 
+                    classwise,
+                    proposal_nums, 
+                    iou_thrs,
+                    metric_items
+                )
             )
-            metrics.remove("miss_rate")
+            det_metrics = list(metrics)
+            det_metrics.remove("miss_rate")
 
         eval_results.update(
             self.evaluate_det_segm(
                 results, 
                 result_files, 
                 coco_gt,
-                metrics, 
+                det_metrics, 
                 logger, 
                 classwise,
                 proposal_nums, 
