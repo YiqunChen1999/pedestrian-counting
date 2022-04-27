@@ -3,7 +3,7 @@
 .vscode
 ckpts
 *.egg-info
-*dhd*
+data/*
 work_dirs
 results.pkl
 *__pycache__

@@ -53,6 +53,7 @@ import numpy as np
 import copy
 import itertools
 # from . import mask as maskUtils
+from pycocotools import mask as maskUtils
 import os
 from collections import defaultdict
 import sys
@@ -300,7 +301,7 @@ class COCO:
 
         print('Loading and preparing results...')
         tic = time.time()
-        if type(resFile) == str or type(resFile) == unicode:
+        if type(resFile) == str:
             anns = json.load(open(resFile))
         elif type(resFile) == np.ndarray:
             anns = self.loadNumpyAnnotations(resFile)

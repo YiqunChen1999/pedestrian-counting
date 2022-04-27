@@ -10,6 +10,7 @@ from typing import Any, List, Tuple, Dict, Sequence, Union
 import io
 import contextlib
 import logging
+from copy import deepcopy as dcp
 import numpy as np
 import mmcv
 from mmcv.utils import print_log
@@ -18,6 +19,7 @@ from mmdet.datasets.coco import CocoDataset
 from mmdet.datasets.api_wrappers import COCO, COCOeval
 
 from counter.utils.eval_MR_multisetup import COCOeval as CityPersonsCOCOeval
+from counter.utils.coco import COCO as CityPersonsCOCO
 
 
 @DATASETS.register_module()
@@ -124,6 +126,7 @@ class DHDTrafficDataset(CocoDataset):
         metric = metrics
         iou_type = "bbox"
         eval_results = {}
+        # coco_gt = dcp(coco_gt)
         redirect_string = io.StringIO()
 
         if iou_thrs is None:
@@ -142,7 +145,7 @@ class DHDTrafficDataset(CocoDataset):
         with contextlib.redirect_stdout(redirect_string):
             for id_setup in range(0, 4):
                 coco_det = coco_gt.loadRes(predictions)
-                cocoEval = CityPersonsCOCOeval(coco_gt, coco_det, iou_type)
+                cocoEval = CityPersonsCOCOeval(dcp(coco_gt), coco_det, iou_type)
                 # cocoEval.params.catIds = self.cat_ids
                 cocoEval.params.imgIds = self.img_ids
                 # cocoEval.params.maxDets = list(proposal_nums)
@@ -185,7 +188,7 @@ class DHDTrafficDataset(CocoDataset):
                 self.calc_miss_rate(
                     results, 
                     result_files, 
-                    coco_gt, 
+                    CityPersonsCOCO(self.ann_file), 
                     "miss_rate", 
                     logger, 
                     classwise,
