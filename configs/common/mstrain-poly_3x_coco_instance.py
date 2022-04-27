@@ -1,7 +1,7 @@
 _base_ = '../_base_/default_runtime.py'
 # dataset settings
-dataset_type = 'DHDTrafficDataset'
-data_root = '/data1/chenyiqun/models/pedestrian-counting/data/TJU-Ped-traffic'
+dataset_type = 'PedestrianDataset'
+data_root = 'data/TJU-Ped-traffic/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
@@ -16,7 +16,7 @@ train_pipeline = [
         poly2mask=False),
     dict(
         type='Resize',
-        img_scale=[(1333, 640), (1333, 800)],
+        img_scale=[(2048, 800), (2048, 1024)],
         multiscale_mode='range',
         keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.5),
@@ -29,7 +29,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(1333, 800),
+        img_scale=(2048, 1024),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=True),

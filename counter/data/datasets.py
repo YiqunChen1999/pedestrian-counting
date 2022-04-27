@@ -2,6 +2,9 @@
 r"""
 Definition of datasets.
 
+NOTE I may need to re-factor the definition of datasets 
+to make it more convinient to define datasets.
+
 Author:
     Yiqun Chen
 """
@@ -23,7 +26,7 @@ from counter.utils.coco import COCO as CityPersonsCOCO
 
 
 @DATASETS.register_module()
-class DHDTrafficDataset(CocoDataset):
+class PedestrianDataset(CocoDataset):
     CLASSES = ('Pedestrian', )
     def evaluate_det_segm(
         self, 

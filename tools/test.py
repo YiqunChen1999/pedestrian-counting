@@ -19,7 +19,7 @@ from mmdet.datasets import (build_dataloader, build_dataset,
 from mmdet.models import build_detector
 from mmdet.utils import setup_multi_processes
 
-from counter.data.datasets import DHDTrafficDataset
+from counter.data.datasets import PedestrianDataset
 
 
 def parse_args():
