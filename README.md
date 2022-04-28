@@ -9,6 +9,7 @@
 
 ## 更新日志
 
+- 2022-04-28：更新 README 文件并新增 mmdet 版本警告。
 - 2022-04-27：发布 baseline 与代码使用说明。
 
 ## 1. 如何开始
@@ -80,6 +81,19 @@ data/TJU-Ped-traffic/dhd_pedestrian
 
 ### 1.3. 准备运行环境
 
+太长不看版：
+```bash
+cd [PROJECT_ROOT]
+conda create -n dl python=3.9 -y
+conda activate dl
+conda install pytorch torchvision cudatoolkit=11.3 -c pytorch -y
+pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
+pip install mmdet
+pip install -r requirements.txt
+python setup.py develop
+```
+
+
 **可选但推荐执行：** 下载 anaconda 或者 miniconda，然后创建一个虚拟环境：
 ```bash
 conda create -n [ENV] python=3.9 -y
@@ -103,9 +117,12 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.1
 pip install mmdet
 ```
 
+**警告：**由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容，关于不同版本如何进行训练与测试将在后面说明。这里默认安装 2022-04-27 的新版本 `mmdet==2.24.0`。
+
 接下来安装本项目的代码：
 ```bash
 cd [PROJECT_ROOT]
+pip install -r requirements.txt
 python setup.py develop
 ```
 
@@ -138,6 +155,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r5
 python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py
 ```
 
+**警告：**由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容。如果安装的 `mmdet` 版本低于 `2.24.0` （例如，`2.23.0`），则只需要将以上命令中的 `tools/` 更换成 `.tools/` 即可（注意这个 `.`）。即：`tools` 下放的是 `mmdet==2.24.0` 的启动工具，`.tools` 下放的是 `mmdet==2.23.0` 的启动工具。
+
 ### 1.5. 测试已有模型
 
 **注意：**本小节仅给出了能够运行起来的示例，关于测试脚本的更多用法请参见 [mmdetection 教程](https://mmdetection.readthedocs.io/zh_CN/latest/1_exist_data_model.html#id10)
@@ -159,6 +178,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_test.sh configs/atss/atss_r50
 ```bash
 python tools/test.py configs/atss/atss_r50_fpn_1x_coco.py work_dirs/atss_r50_fpn_1x_coco/latest.pth --eval bbox miss_rate
 ```
+
+**警告：**由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容。如果安装的 `mmdet` 版本低于 `2.24.0` （例如，`2.23.0`），则只需要将以上命令中的 `tools/` 更换成 `.tools/` 即可（注意这个 `.`）。即：`tools` 下放的是 `mmdet==2.24.0` 的启动工具，`.tools` 下放的是 `mmdet==2.23.0` 的启动工具。
 
 ## 2. 关于数据集应该注意的一些细节
 

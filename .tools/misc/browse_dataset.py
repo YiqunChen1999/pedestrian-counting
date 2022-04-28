@@ -11,7 +11,6 @@ from mmcv import Config, DictAction
 from mmdet.core.utils import mask2ndarray
 from mmdet.core.visualization import imshow_det_bboxes
 from mmdet.datasets.builder import build_dataset
-from mmdet.utils import update_data_root
 
 
 def parse_args():
@@ -56,10 +55,6 @@ def retrieve_data_cfg(config_path, skip_type, cfg_options):
         ]
 
     cfg = Config.fromfile(config_path)
-
-    # update data root according to MMDET_DATASETS
-    update_data_root(cfg)
-
     if cfg_options is not None:
         cfg.merge_from_dict(cfg_options)
     train_data_cfg = cfg.data.train

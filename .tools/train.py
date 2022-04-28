@@ -8,7 +8,6 @@ import warnings
 
 import mmcv
 import torch
-import torch.distributed as dist
 from mmcv import Config, DictAction
 from mmcv.runner import get_dist_info, init_dist
 from mmcv.utils import get_git_hash
@@ -17,8 +16,7 @@ from mmdet import __version__
 from mmdet.apis import init_random_seed, set_random_seed, train_detector
 from mmdet.datasets import build_dataset
 from mmdet.models import build_detector
-from mmdet.utils import (collect_env, get_device, get_root_logger,
-                         setup_multi_processes, update_data_root)
+from mmdet.utils import collect_env, get_root_logger, setup_multi_processes
 
 
 def parse_args():
@@ -55,10 +53,6 @@ def parse_args():
         '(only applicable to non-distributed training)')
     parser.add_argument('--seed', type=int, default=None, help='random seed')
     parser.add_argument(
-        '--diff-seed',
-        action='store_true',
-        help='Whether or not set different seeds for different ranks')
-    parser.add_argument(
         '--deterministic',
         action='store_true',
         help='whether to set deterministic options for CUDNN backend.')
@@ -85,10 +79,6 @@ def parse_args():
         default='none',
         help='job launcher')
     parser.add_argument('--local_rank', type=int, default=0)
-    parser.add_argument(
-        '--auto-scale-lr',
-        action='store_true',
-        help='enable automatically scaling LR.')
     args = parser.parse_args()
     if 'LOCAL_RANK' not in os.environ:
         os.environ['LOCAL_RANK'] = str(args.local_rank)
@@ -108,24 +98,8 @@ def main():
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
-
-    # update data root according to MMDET_DATASETS
-    update_data_root(cfg)
-
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
-
-    if args.auto_scale_lr:
-        if 'auto_scale_lr' in cfg and \
-                'enable' in cfg.auto_scale_lr and \
-                'base_batch_size' in cfg.auto_scale_lr:
-            cfg.auto_scale_lr.enable = True
-        else:
-            warnings.warn('Can not find "auto_scale_lr" or '
-                          '"auto_scale_lr.enable" or '
-                          '"auto_scale_lr.base_batch_size" in your'
-                          ' configuration file. Please update all the '
-                          'configuration files to mmdet >= 2.23.1.')
 
     # set multi-process settings
     setup_multi_processes(cfg)
@@ -193,10 +167,8 @@ def main():
     logger.info(f'Distributed training: {distributed}')
     logger.info(f'Config:\n{cfg.pretty_text}')
 
-    cfg.device = get_device()
     # set random seeds
-    seed = init_random_seed(args.seed, device=cfg.device)
-    seed = seed + dist.get_rank() if args.diff_seed else seed
+    seed = init_random_seed(args.seed)
     logger.info(f'Set random seed to {seed}, '
                 f'deterministic: {args.deterministic}')
     set_random_seed(seed, deterministic=args.deterministic)

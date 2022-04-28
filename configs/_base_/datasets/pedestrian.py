@@ -1,3 +1,7 @@
+# Custom imports
+custom_imports = dict(
+    imports=['counter.data.datasets'],
+    allow_failed_imports=False)
 # dataset settings
 dataset_type = 'PedestrianDataset'
 data_root = 'data/TJU-Ped-traffic/'
