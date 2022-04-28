@@ -5,6 +5,8 @@
 
 **注意** 以下所有以 `[全大写英文]` 出现的均为需要按照自己的机器情况修改的地方，例如：`[PROJECT_ROOT]` 表示本项目文件夹在自己机器的位置，实际中可能为：`~/projects/pedestrian-counting/`。
 
+**注意：**如果不会用 open-mmlab 相关工具，强烈建议按照本文档先跑起来。
+
 ## 更新日志
 
 - 2022-04-27：发布 baseline 与代码使用说明。
@@ -20,14 +22,23 @@ git clone https://github.com/yiqunchen1999/pedestrian-counting.git
 
 ### 1.2. 下载数据集
 
-此处以 TJU-DHD-traffic 为例，从 [TJU-DHD](https://github.com/tjubiit/TJU-DHD) 官方连接处下载数据集以下文件并上传到服务器中 `[DATA_ROOT]` (例如，`/data1/share/TJU-DHD/TJU-Ped-traffic/`)：
+新建一个 `[DATA_ROOT]`，例如：`/data1/share/TJU-DHD/`。 此处以 TJU-DHD-traffic 为例，在 `[DATA_ROOT]` 下新建一个文件夹 `TJU-Ped-traffic`：
+```bash
+cd [DATA_ROOT]
+mkdir TJU-Ped-traffic
+```
+从 [TJU-DHD](https://github.com/tjubiit/TJU-DHD) 官方连接处下载以下文件并上传到服务器文件夹 `[DATA_ROOT]/TJU-Ped-traffic/` 下 (例如，`/data1/share/TJU-DHD/TJU-Ped-traffic/`)：
 
 - dhd_traffic_trainval_images.zip
 - dhd_pedestrian_traffic_trainval_annos.zip
 
 如果需要 **使用 Linux 终端下载 OneDrive 文件** 的教程，可联系作者获取。
 
-完成之后，应该在 `[DATA_ROOT]` 下有所需的 .zip 文件，例如：`/data1/share/TJU-DHD/TJU-Ped-traffic/dhd_traffic_trainval_images.zip`
+完成之后，应该在 `[DATA_ROOT]/TJU-Ped-traffic` 下有所需的 .zip 文件，例如：
+```bash
+/data1/share/TJU-DHD/TJU-Ped-traffic/dhd_traffic_trainval_images.zip
+/data1/share/TJU-DHD/TJU-Ped-traffic/dhd_pedestrian_traffic_trainval_annos.zip
+```
 
 解压文件：
 ```bash
@@ -42,7 +53,26 @@ unzip dhd_pedestrian_traffic_trainval_annos.zip
 cd [PROJECT_ROOT]
 ln -s [DATA_ROOT] data
 ```
-完成这一步后，在项目目录下应该会出现 `data/TJU-Ped-traffic/dhd_traffic_trainval_images.zip` 等文件。
+例如：
+```bash
+cd ~/projects/pedestrian-counting
+ln -s /data1/share/TJU-DHD/ data
+```
+完成这一步后，在项目目录下应该会出现:
+```bash
+data/TJU-Ped-traffic/dhd_traffic_trainval_images.zip
+data/TJU-Ped-traffic/dhd_pedestrian_traffic_trainval_annos.zip
+data/TJU-Ped-traffic/dhd_traffic
+    |_ images
+        |_ test
+        |_ train
+        |_ val
+data/TJU-Ped-traffic/dhd_pedestrian
+    |_ ped_traffic
+        |_ annotations
+            |_ dhd_pedestrian_traffic_train.json
+            |_ dhd_pedestrian_traffic_val.json
+```
 
 **注意：** 这一步仅仅是进行路径关联，并不会把文件复制到项目目录下，对于家目录容量有限的情况很有帮助。
 
@@ -105,9 +135,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r5
 
 如果只能单卡训练：
 ```bash
-python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py
 ```
-**注意：**这里可能需要修改为 `data.samples_per_gpu=16`，因为通常所有卡 `batch size` 之和为 16，如果显存不足再考虑其他方案。
 
 ### 1.5. 测试已有模型
 
@@ -170,6 +199,18 @@ git push https://github.com/yiqunchen1999/pedestrian-counting.git [BRANCH]
 其中 `[YOUR_COMMENT]` 是对本次提交的修改的说明，`[BRANCH]` 是自己的分支名称。
 
 当当前分支确实可用时，可以将其合并到主分支。
+
+### 4.3. 示例
+
+此处以新建一个文档分支为例，分支名为 `docs`：
+```bash
+git checkout -b docs
+# 输出：Switched to a new branch 'docs'
+# 自己进行某些修改，例如，完善文档
+git add --all
+git commit -m "update readme"
+git push https://github.com/yiqunchen1999/pedestrian-counting.git docs
+```
 
 ## 5. 评价指标
 
