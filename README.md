@@ -5,10 +5,11 @@
 
 **注意** 以下所有以 `[全大写英文]` 出现的均为需要按照自己的机器情况修改的地方，例如：`[PROJECT_ROOT]` 表示本项目文件夹在自己机器的位置，实际中可能为：`~/projects/pedestrian-counting/`。
 
-**注意：**如果不会用 open-mmlab 相关工具，强烈建议按照本文档先跑起来。
+**注意：** 如果不会用 open-mmlab 相关工具，强烈建议按照本文档先跑起来。
 
 ## 更新日志
 
+- 2022-04-29：新增了 [Issues 腾讯文档](https://docs.qq.com/doc/DY0VRVU5Pb0RkTExU?scene=f37afff1f6077c92c2401eff8Rsnn1)，方便记录已有问题及解决方案。若遇到问题，请先到腾讯文档中查看是否已有解决方案。
 - 2022-04-28：更新 README 文件并新增 mmdet 版本警告。
 - 2022-04-27：发布 baseline 与代码使用说明。
 
@@ -117,7 +118,7 @@ pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.1
 pip install mmdet
 ```
 
-**警告：**由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容，关于不同版本如何进行训练与测试将在后面说明。这里默认安装 2022-04-27 的新版本 `mmdet==2.24.0`。
+**警告：** 由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容，关于不同版本如何进行训练与测试将在后面说明。这里默认安装 2022-04-27 的新版本 `mmdet==2.24.0`。
 
 接下来安装本项目的代码：
 ```bash
@@ -128,7 +129,7 @@ python setup.py develop
 
 ### 1.4. 运行训练程序
 
-**注意：**本小节仅给出了能够运行起来的示例，关于训练脚本的更多用法请参见 [mmdetection 教程](https://mmdetection.readthedocs.io/zh_CN/latest/2_new_data_model.html#id4)
+**注意：** 本小节仅给出了能够运行起来的示例，关于训练脚本的更多用法请参见 [mmdetection 教程](https://mmdetection.readthedocs.io/zh_CN/latest/2_new_data_model.html#id4)
 
 至此就可以开始训练模型了，接下来给出一个示例：
 ```bash
@@ -148,18 +149,18 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r5
 - tools/dist_train.sh 表示运行脚本 `[PROJECT_ROOT]/tools/dist_train.sh`，这是用于分布式训练的启动脚本；
 - configs/atss/atss_r50_fpn_1x_coco.py 表示使用 `[PROJECT_ROOT]/configs/atss/atss_r50_fpn_1x_coco.py` 这个配置文件，该文件中定义了模型结构，数据集路径，优化器参数，损失函数，训练策略等等，其他配置文件可以在同一文件夹下找到。关于配置文件的使用方法可以在 [mmdetection 教程](https://mmdetection.readthedocs.io/zh_CN/latest/tutorials/config.html) 中找到，下面也给出了自己进行实验时可能会修改的地方；
 - 4 表示用于分布式训练的 GPU 数目，不能多于可用的显卡数；
-- --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005" 表示用终端输入的参数来替代配置文件中的参数，例如，这里指明每张卡有 4 个样本（4 张图片），优化器的学习率为 0.005。**注意：**因为这里的空格具有特殊含义，等号两侧不能有空格；
+- --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005" 表示用终端输入的参数来替代配置文件中的参数，例如，这里指明每张卡有 4 个样本（4 张图片），优化器的学习率为 0.005。**注意：** 因为这里的空格具有特殊含义，等号两侧不能有空格；
 
 如果只能单卡训练：
 ```bash
 python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py
 ```
 
-**警告：**由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容。如果安装的 `mmdet` 版本低于 `2.24.0` （例如，`2.23.0`），则只需要将以上命令中的 `tools/` 更换成 `.tools/` 即可（注意这个 `.`）。即：`tools` 下放的是 `mmdet==2.24.0` 的启动工具，`.tools` 下放的是 `mmdet==2.23.0` 的启动工具。
+**警告：** 由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容。如果安装的 `mmdet` 版本低于 `2.24.0` （例如，`2.23.0`），则只需要将以上命令中的 `tools/` 更换成 `.tools/` 即可（注意这个 `.`）。即：`tools` 下放的是 `mmdet==2.24.0` 的启动工具，`.tools` 下放的是 `mmdet==2.23.0` 的启动工具。
 
 ### 1.5. 测试已有模型
 
-**注意：**本小节仅给出了能够运行起来的示例，关于测试脚本的更多用法请参见 [mmdetection 教程](https://mmdetection.readthedocs.io/zh_CN/latest/1_exist_data_model.html#id10)
+**注意：** 本小节仅给出了能够运行起来的示例，关于测试脚本的更多用法请参见 [mmdetection 教程](https://mmdetection.readthedocs.io/zh_CN/latest/1_exist_data_model.html#id10)
 
 ```bash
 cd [PROJECT_ROOT]
@@ -179,7 +180,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_test.sh configs/atss/atss_r50
 python tools/test.py configs/atss/atss_r50_fpn_1x_coco.py work_dirs/atss_r50_fpn_1x_coco/latest.pth --eval bbox miss_rate
 ```
 
-**警告：**由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容。如果安装的 `mmdet` 版本低于 `2.24.0` （例如，`2.23.0`），则只需要将以上命令中的 `tools/` 更换成 `.tools/` 即可（注意这个 `.`）。即：`tools` 下放的是 `mmdet==2.24.0` 的启动工具，`.tools` 下放的是 `mmdet==2.23.0` 的启动工具。
+**警告：** 由于 `mmdet` 于 2022-04-27 晚更新了 pypi 的版本，因此与之前版本的启动工具不兼容。如果安装的 `mmdet` 版本低于 `2.24.0` （例如，`2.23.0`），则只需要将以上命令中的 `tools/` 更换成 `.tools/` 即可（注意这个 `.`）。即：`tools` 下放的是 `mmdet==2.24.0` 的启动工具，`.tools` 下放的是 `mmdet==2.23.0` 的启动工具。
 
 ## 2. 关于数据集应该注意的一些细节
 
