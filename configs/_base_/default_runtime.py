@@ -1,3 +1,7 @@
+# Custom imports
+custom_imports = dict(
+    imports=['counter.data.datasets'],
+    allow_failed_imports=False)
 checkpoint_config = dict(interval=1)
 # yapf:disable
 log_config = dict(

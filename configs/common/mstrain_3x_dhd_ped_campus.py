@@ -1,7 +1,7 @@
 _base_ = '../_base_/default_runtime.py'
 # dataset settings
 dataset_type = 'PedestrianDataset'
-data_root = 'data/TJU-Ped-traffic/'
+data_root = 'data/TJU-Ped-campus/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
@@ -46,23 +46,23 @@ data = dict(
         times=3,
         dataset=dict(
             type=dataset_type,
-            ann_file=data_root + 'annotations/instances_train2017.json',
-            img_prefix=data_root + 'train2017/',
+            ann_file=data_root + 'dhd_pedestrian/ped_campus/annotations/dhd_pedestrian_campus_train.json',
+            img_prefix=data_root + 'dhd_campus_train_images/dhd_campus/images/train',
             pipeline=train_pipeline)),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'dhd_pedestrian/ped_campus/annotations/dhd_pedestrian_campus_val.json',
+        img_prefix=data_root + 'dhd_campus/images/val',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'dhd_pedestrian/ped_campus/annotations/dhd_pedestrian_campus_val.json',
+        img_prefix=data_root + 'dhd_campus/images/val',
         pipeline=test_pipeline))
-evaluation = dict(interval=1, metric='bbox')
+evaluation = dict(interval=1, metric=['bbox', 'miss_rate'])
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
 
 # learning policy
@@ -72,10 +72,5 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=0.001,
-    step=[120000, 160000])
-
-# Runner type
-runner = dict(type='IterBasedRunner', max_iters=180000)
-
-checkpoint_config = dict(interval=10000)
-evaluation = dict(interval=10000, metric='bbox', proposal_nums=(1, 10, 100))
+    step=[9, 11])
+runner = dict(type='EpochBasedRunner', max_epochs=12)

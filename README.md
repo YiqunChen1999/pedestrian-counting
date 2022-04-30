@@ -9,9 +9,15 @@
 
 ## 更新日志
 
+- 2022-04-30：更新了 baseline （多尺度训练，3x policy）。
 - 2022-04-29：新增了 [Issues 腾讯文档](https://docs.qq.com/doc/DY0VRVU5Pb0RkTExU?scene=f37afff1f6077c92c2401eff8Rsnn1)，方便记录已有问题及解决方案。若遇到问题，请先到腾讯文档中查看是否已有解决方案。
 - 2022-04-28：更新 README 文件并新增 mmdet 版本警告。
 - 2022-04-27：发布 baseline 与代码使用说明。
+
+## TODO 
+
+- [ ] 合并 dev-dyconv；
+- [ ] 增加 ATSS-Res101 的结果；
 
 ## 1. 如何开始
 
@@ -236,6 +242,8 @@ git push https://github.com/yiqunchen1999/pedestrian-counting.git docs
 
 ## 5. 评价指标
 
+**注意：** 以下评价指标均为越小越好。
+
 | Target Attribute      | Height Range  | Visibility Range  |
 |-----------------------|---------------|-------------------|
 | All	                | [20,+∞)	    | [0.2,+∞)          |
@@ -250,38 +258,5 @@ git push https://github.com/yiqunchen1999/pedestrian-counting.git docs
 
 ## 6. 实验数据
 
-### 6.1. TJU-DHD-Pedestrian-Traffic 
-
-#### 6.1.1. configs/atss/atss_r50_fpn_1x_coco.py
-
-| Miss Rate                                  | Value  |
-|--------------------------------------------|--------|
-| Average Miss Rate  (MR) @ Reasonable       | 25.01% |
-| Average Miss Rate  (MR) @ ReasonableSmall  | 35.51% |
-| Average Miss Rate  (MR) @ ReasonableHeavy  | 61.97% |
-| Average Miss Rate  (MR) @ All              | 41.30% |
-
-| AP & AR                 | IoU           | area        | maxDets     | Value |
-|-------------------------|---------------|-------------|-------------|-------|
-| Average Precision  (AP) | IoU=0.50:0.95 | area=   all | maxDets=100 | 0.422 |                                                                      
-| Average Precision  (AP) | IoU=0.50      | area=   all | maxDets=100 | 0.790 |                                                                      
-| Average Precision  (AP) | IoU=0.75      | area=   all | maxDets=100 | 0.399 |
-| Average Precision  (AP) | IoU=0.50:0.95 | area= small | maxDets=100 | 0.210 |                                                                      
-| Average Precision  (AP) | IoU=0.50:0.95 | area=medium | maxDets=100 | 0.457 |
-| Average Precision  (AP) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.629 |
-| Average Recall     (AR) | IoU=0.50:0.95 | area=   all | maxDets=  1 | 0.218 |
-| Average Recall     (AR) | IoU=0.50:0.95 | area=   all | maxDets= 10 | 0.502 |
-| Average Recall     (AR) | IoU=0.50:0.95 | area=   all | maxDets=100 | 0.521 |
-| Average Recall     (AR) | IoU=0.50:0.95 | area= small | maxDets=100 | 0.332 |
-| Average Recall     (AR) | IoU=0.50:0.95 | area=medium | maxDets=100 | 0.567 |
-| Average Recall     (AR) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.695 |
-
-### 6.2. TJU-DHD-Pedestrian-Campus
-
-暂无
-
-### 6.3. 其他数据集
-#### 6.3.1. 配置文件路径
-
-
+参见 [results.md](./results.md)
 

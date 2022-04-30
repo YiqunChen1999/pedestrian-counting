@@ -46,23 +46,23 @@ data = dict(
         times=3,
         dataset=dict(
             type=dataset_type,
-            ann_file=data_root + 'annotations/instances_train2017.json',
-            img_prefix=data_root + 'train2017/',
+            ann_file=data_root + 'dhd_pedestrian/ped_traffic/annotations/dhd_pedestrian_traffic_train.json',
+            img_prefix=data_root + 'dhd_traffic/images/train',
             pipeline=train_pipeline)),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'dhd_pedestrian/ped_traffic/annotations/dhd_pedestrian_traffic_val.json',
+        img_prefix=data_root + 'dhd_traffic/images/val',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=data_root + 'dhd_pedestrian/ped_traffic/annotations/dhd_pedestrian_traffic_val.json',
+        img_prefix=data_root + 'dhd_traffic/images/val',
         pipeline=test_pipeline))
-evaluation = dict(interval=1, metric='bbox', proposal_nums=(1, 10, 100))
+evaluation = dict(interval=1, metric=['bbox', 'miss_rate'])
 
 # optimizer
-optimizer = dict(type='SGD', lr=0.02, momentum=0.9, weight_decay=0.0001)
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
 optimizer_config = dict(grad_clip=None)
 
 # learning policy
