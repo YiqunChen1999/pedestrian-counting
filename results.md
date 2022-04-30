@@ -3,6 +3,8 @@
 
 本文档记录了各个实验的实验结果，其中，AP & AR 仅作为参考。
 
+**注意：** 所有 `MR` 指标都是越小越好。
+
 ## 0. 全部结果速览
 
 | 缩写   | Target Attribute      | Height Range  | Visibility Range  |
@@ -33,14 +35,19 @@
 
 | Model       | lr    | batch size | policy     | MR@R   | MR@S   | MR@RO  | MR@All |
 |-------------|-------|------------|------------|--------|--------|--------|--------|
-| ATSS-Res101 | 0.005 | 16         | 1x         | 32.45% | 67.55% | 68.79% | 41.96% |
+| ATSS-Res50  | 0.005 | 16         | 1x         | 32.45% | 67.55% | 68.79% | 41.96% |
+| ATSS-Res50  | 0.005 | 16         | mstrain-3x |        |        |        |        |
+| ATSS-Res101 | 0.005 | 16         | 1x         |        |        |        |        |
 | ATSS-Res101 | 0.005 | 16         | mstrain-3x |        |        |        |        |
 
 ## 1. TJU-DHD-Pedestrian-Traffic 
 
 ### 1.1. configs/atss/atss_r50_fpn_1x_coco.py
 
-- 训练命令：CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_coco.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_coco.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
 
 | Miss Rate                                  | Value  |
 |--------------------------------------------|--------|
@@ -67,7 +74,10 @@
 
 ### 1.2. configs/atss/atss_r50_fpn_mstrain_800-1024_3x_coco.py
 
-- 训练命令：CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_mstrain_800-1024_3x_coco.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_mstrain_800-1024_3x_coco.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
 
 | Miss Rate                                  | Value  |
 |--------------------------------------------|--------|
@@ -93,7 +103,10 @@
 
 ### 1.3. configs/atss/atss_r101_fpn_1x_coco.py
 
-- 训练命令：CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_coco.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_coco.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
 
 | Miss Rate                                  | Value  |
 |--------------------------------------------|--------|
@@ -119,7 +132,10 @@
 
 ### 1.4. configs/atss/atss_r101_fpn_mstrain_800-1024_3x_dhd_ped_traffic.py
 
-- 训练命令：CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=18181 tools/dist_train.sh configs/atss/atss_r101_fpn_mstrain_800-1024_3x_dhd_ped_traffic.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=18181 tools/dist_train.sh configs/atss/atss_r101_fpn_mstrain_800-1024_3x_dhd_ped_traffic.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
 
 | Miss Rate                                  | Value  |
 |--------------------------------------------|--------|
@@ -148,6 +164,11 @@
 
 **注意：** 详细说明请见 [dev-dyconv](https://github.com/YiqunChen1999/pedestrian-counting/tree/dev-dyconv) 分支。
 
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=18181 tools/dist_train.sh configs/atss/atss_r50_fpn_dcd_1x_dhd_ped_traffic.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
+
 | Miss Rate                                  | baseline  | fpn_dcd (only smooth)    |
 |--------------------------------------------|-----------|--------------------------|
 | Average Miss Rate  (MR) @ Reasonable       | 25.01%    | 25.07%                   |
@@ -159,8 +180,10 @@
 
 ### 2.1. configs/atss/atss_r50_fpn_1x_dhd_ped_campus.py
 
-- 训练命令：CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_dhd_ped_campus.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
-
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_dhd_ped_campus.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
 
 | Miss Rate                                  | Value  |
 |--------------------------------------------|--------|
