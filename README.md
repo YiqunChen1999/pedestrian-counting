@@ -1,7 +1,7 @@
 
-# Pedestrian Counting----2
+# Pedestrian Counting DyConv
 
-本文档记录了如何零基础运行本项目，均以 Linux 为例。
+本文档介绍如何将动态卷积添加到@陈逸群写的
 
 **注意** 以下所有以 `[全大写英文]` 出现的均为需要按照自己的机器情况修改的地方，例如：`[PROJECT_ROOT]` 表示本项目文件夹在自己机器的位置，实际中可能为：`~/projects/pedestrian-counting/`。
 
