@@ -64,8 +64,7 @@ python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py --cfg-options "optimi
 
 #### 2.1.1. configs/atss/atss_r50_dcd_fpn_1x_coco.py
 
-| Miss Rate                                  | baseline  | fpn_dcd      |
-|                                            |           |(only smooth) |
+| Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      |
 |--------------------------------------------|-----------|--------------|
 | Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |
 | Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    34.38%    |
