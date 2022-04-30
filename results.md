@@ -144,7 +144,7 @@
 | Average Recall     (AR) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.707 |
 
 
-### 1.5. configs/atss/atss_r50_dcd_fpn_1x_coco.py
+### 1.5. configs/atss/atss_r50_fpn_dcd_1x_dhd_ped_traffic.py
 
 **注意：** 详细说明请见 [dev-dyconv](https://github.com/YiqunChen1999/pedestrian-counting/tree/dev-dyconv) 分支。
 

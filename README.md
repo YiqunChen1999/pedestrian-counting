@@ -9,15 +9,14 @@
 
 ## 更新日志
 
-- 2022-04-30：更新了 baseline （多尺度训练，3x policy）。
+- 2022-04-30：更新了 baseline （多尺度训练，3x policy）并增加了动态卷积的模块与配置。
 - 2022-04-29：新增了 [Issues 腾讯文档](https://docs.qq.com/doc/DY0VRVU5Pb0RkTExU?scene=f37afff1f6077c92c2401eff8Rsnn1)，方便记录已有问题及解决方案。若遇到问题，请先到腾讯文档中查看是否已有解决方案。
 - 2022-04-28：更新 README 文件并新增 mmdet 版本警告。
 - 2022-04-27：发布 baseline 与代码使用说明。
 
 ## TODO 
 
-- [ ] 合并 dev-dyconv；
-- [ ] 增加 ATSS-Res101 的结果；
+- [ ] 增加 DHD-Ped-campus 子集的 baseline。
 
 ## 1. 如何开始
 
