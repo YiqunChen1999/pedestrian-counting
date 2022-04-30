@@ -1,5 +1,9 @@
+_base_ = [
+    '../_base_/datasets/pedestrian.py',
+    '../_base_/schedules/schedule_1x.py', '../_base_/default_runtime.py'
+]
 custom_imports = dict(
-    imports=['counter.models.fpn_dcd'],
+    imports=['counter.models.fpn_dcd','counter.data.datasets'],
     allow_failed_imports=False)
 model = dict(
     type='ATSS',
@@ -14,12 +18,7 @@ model = dict(
         style='pytorch',
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
     neck=dict(
-        type='FPN',
-        in_channels=[256, 512, 1024, 2048],
-        out_channels=256,
-        start_level=1,
-        add_extra_convs='on_output',
-        num_outs=5),
+        type='FPN_dcd'),
     bbox_head=dict(
         type='ATSSHead',
         num_classes=1,
@@ -57,3 +56,6 @@ model = dict(
         score_thr=0.05,
         nms=dict(type='nms', iou_threshold=0.6),
         max_per_img=100))
+# optimizer
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+find_unused_parameters = True

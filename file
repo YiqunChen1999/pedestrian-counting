@@ -1,0 +1,379 @@
+nohup: ignoring input
+/home/zhuzeyu/miniconda3/envs/det/lib/python3.7/site-packages/mmdet/utils/setup_env.py:39: UserWarning: Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  f'Setting OMP_NUM_THREADS environment variable for each process '
+/home/zhuzeyu/miniconda3/envs/det/lib/python3.7/site-packages/mmdet/utils/setup_env.py:49: UserWarning: Setting MKL_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed.
+  f'Setting MKL_NUM_THREADS environment variable for each process '
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+2022-04-29 17:21:24,408 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.10 (default, Jun  4 2021, 14:48:32) [GCC 7.5.0]
+CUDA available: True
+GPU 0,1,2,3,4,5,6,7: GeForce RTX 2080 Ti
+CUDA_HOME: /usr/local/cuda-10.0
+NVCC: Cuda compilation tools, release 10.0, V10.0.13
+GCC: gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-39)
+PyTorch: 1.9.0
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.2 Product Build 20200624 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v2.1.2 (Git Hash 98be7e8afa711dc9b66c8ff3504129cb82013cdb)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 10.2
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_61,code=sm_61;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_37,code=compute_37
+  - CuDNN 7.6.5
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=10.2, CUDNN_VERSION=7.6.5, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.9.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.10.0
+OpenCV: 4.5.3
+MMCV: 1.5.0
+MMCV Compiler: GCC 7.3
+MMCV CUDA Compiler: 10.2
+MMDetection: 2.24.0+
+------------------------------------------------------------
+
+2022-04-29 17:21:25,684 - mmdet - INFO - Distributed training: False
+2022-04-29 17:21:27,036 - mmdet - INFO - Config:
+custom_imports = dict(
+    imports=['counter.models.fpn_dcd', 'counter.data.datasets'],
+    allow_failed_imports=False)
+dataset_type = 'PedestrianDataset'
+data_root = 'data/TJU-Ped-traffic/'
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True),
+    dict(type='Resize', img_scale=(2048, 1024), keep_ratio=True),
+    dict(type='RandomFlip', flip_ratio=0.5),
+    dict(
+        type='Normalize',
+        mean=[123.675, 116.28, 103.53],
+        std=[58.395, 57.12, 57.375],
+        to_rgb=True),
+    dict(type='Pad', size_divisor=32),
+    dict(type='DefaultFormatBundle'),
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+]
+test_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='MultiScaleFlipAug',
+        img_scale=(2048, 1024),
+        flip=False,
+        transforms=[
+            dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip'),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='ImageToTensor', keys=['img']),
+            dict(type='Collect', keys=['img'])
+        ])
+]
+data = dict(
+    samples_per_gpu=4,
+    workers_per_gpu=2,
+    train=dict(
+        type='PedestrianDataset',
+        ann_file=
+        'data/TJU-Ped-traffic/dhd_pedestrian/ped_traffic/annotations/dhd_pedestrian_traffic_train.json',
+        img_prefix='data/TJU-Ped-traffic/dhd_traffic/images/train',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(type='LoadAnnotations', with_bbox=True),
+            dict(type='Resize', img_scale=(2048, 1024), keep_ratio=True),
+            dict(type='RandomFlip', flip_ratio=0.5),
+            dict(
+                type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375],
+                to_rgb=True),
+            dict(type='Pad', size_divisor=32),
+            dict(type='DefaultFormatBundle'),
+            dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+        ]),
+    val=dict(
+        type='PedestrianDataset',
+        ann_file=
+        'data/TJU-Ped-traffic/dhd_pedestrian/ped_traffic/annotations/dhd_pedestrian_traffic_val.json',
+        img_prefix='data/TJU-Ped-traffic/dhd_traffic/images/val',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(2048, 1024),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=32),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]),
+    test=dict(
+        type='PedestrianDataset',
+        ann_file=
+        'data/TJU-Ped-traffic/dhd_pedestrian/ped_traffic/annotations/dhd_pedestrian_traffic_val.json',
+        img_prefix='data/TJU-Ped-traffic/dhd_traffic/images/val',
+        pipeline=[
+            dict(type='LoadImageFromFile'),
+            dict(
+                type='MultiScaleFlipAug',
+                img_scale=(2048, 1024),
+                flip=False,
+                transforms=[
+                    dict(type='Resize', keep_ratio=True),
+                    dict(type='RandomFlip'),
+                    dict(
+                        type='Normalize',
+                        mean=[123.675, 116.28, 103.53],
+                        std=[58.395, 57.12, 57.375],
+                        to_rgb=True),
+                    dict(type='Pad', size_divisor=32),
+                    dict(type='ImageToTensor', keys=['img']),
+                    dict(type='Collect', keys=['img'])
+                ])
+        ]))
+evaluation = dict(
+    interval=1, metric=['bbox', 'miss_rate'], proposal_nums=(1, 10, 100))
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
+optimizer_config = dict(grad_clip=None)
+lr_config = dict(
+    policy='step',
+    warmup='linear',
+    warmup_iters=5000,
+    warmup_ratio=0.001,
+    step=[8, 11])
+runner = dict(type='EpochBasedRunner', max_epochs=12)
+checkpoint_config = dict(interval=1)
+log_config = dict(interval=50, hooks=[dict(type='TextLoggerHook')])
+custom_hooks = [dict(type='NumClassCheckHook')]
+dist_params = dict(backend='nccl')
+log_level = 'INFO'
+load_from = None
+resume_from = None
+workflow = [('train', 1)]
+opencv_num_threads = 0
+mp_start_method = 'fork'
+model = dict(
+    type='ATSS',
+    backbone=dict(
+        type='ResNet',
+        depth=50,
+        num_stages=4,
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=1,
+        norm_cfg=dict(type='BN', requires_grad=True),
+        norm_eval=True,
+        style='pytorch',
+        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')),
+    neck=dict(type='FPN_dcd'),
+    bbox_head=dict(
+        type='ATSSHead',
+        num_classes=1,
+        in_channels=256,
+        stacked_convs=4,
+        feat_channels=256,
+        anchor_generator=dict(
+            type='AnchorGenerator',
+            ratios=[1.0],
+            octave_base_scale=8,
+            scales_per_octave=1,
+            strides=[8, 16, 32, 64, 128]),
+        bbox_coder=dict(
+            type='DeltaXYWHBBoxCoder',
+            target_means=[0.0, 0.0, 0.0, 0.0],
+            target_stds=[0.1, 0.1, 0.2, 0.2]),
+        loss_cls=dict(
+            type='FocalLoss',
+            use_sigmoid=True,
+            gamma=2.0,
+            alpha=0.25,
+            loss_weight=1.0),
+        loss_bbox=dict(type='GIoULoss', loss_weight=2.0),
+        loss_centerness=dict(
+            type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0)),
+    train_cfg=dict(
+        assigner=dict(type='ATSSAssigner', topk=9),
+        allowed_border=-1,
+        pos_weight=-1,
+        debug=False),
+    test_cfg=dict(
+        nms_pre=1000,
+        min_bbox_size=0,
+        score_thr=0.05,
+        nms=dict(type='nms', iou_threshold=0.6),
+        max_per_img=100))
+work_dir = './work_dirs/atss_r50_dcd_fpn_1x_coco'
+auto_resume = False
+gpu_ids = [0]
+
+2022-04-29 17:21:27,036 - mmdet - INFO - Set random seed to 124906103, deterministic: False
+/home/zhuzeyu/miniconda3/envs/det/lib/python3.7/site-packages/mmdet/models/dense_heads/anchor_head.py:116: UserWarning: DeprecationWarning: `num_anchors` is deprecated, for consistency or also use `num_base_priors` instead
+  warnings.warn('DeprecationWarning: `num_anchors` is deprecated, '
+2022-04-29 17:21:27,807 - mmdet - INFO - initialize ResNet with init_cfg {'type': 'Pretrained', 'checkpoint': 'torchvision://resnet50'}
+2022-04-29 17:21:27,808 - mmcv - INFO - load model from: torchvision://resnet50
+2022-04-29 17:21:27,809 - mmcv - INFO - load checkpoint from torchvision path: torchvision://resnet50
+2022-04-29 17:21:28,009 - mmcv - WARNING - The model and loaded state dict do not match exactly
+
+unexpected key in source state_dict: fc.weight, fc.bias
+
+2022-04-29 17:21:28,102 - mmdet - INFO - initialize ATSSHead with init_cfg {'type': 'Normal', 'layer': 'Conv2d', 'std': 0.01, 'override': {'type': 'Normal', 'name': 'atss_cls', 'std': 0.01, 'bias_prob': 0.01}}
+loading annotations into memory...
+Done (t=0.76s)
+creating index...
+index created!
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+2022-04-29 17:21:34,568 - mmdet - INFO - Automatic scaling of learning rate (LR) has been disabled.
+loading annotations into memory...
+Done (t=0.30s)
+creating index...
+index created!
+2022-04-29 17:21:34,895 - mmdet - INFO - Start running, host: zhuzeyu@localhost.localdomain, work_dir: /home/zhuzeyu/pedestrian-counting/work_dirs/atss_r50_dcd_fpn_1x_coco
+2022-04-29 17:21:34,895 - mmdet - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) CheckpointHook                     
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(NORMAL      ) NumClassCheckHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) StepLrUpdaterHook                  
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+ -------------------- 
+after_train_iter:
+(ABOVE_NORMAL) OptimizerHook                      
+(NORMAL      ) CheckpointHook                     
+(LOW         ) IterTimerHook                      
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) CheckpointHook                     
+(LOW         ) EvalHook                           
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) NumClassCheckHook                  
+(LOW         ) IterTimerHook                      
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+before_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(LOW         ) IterTimerHook                      
+ -------------------- 
+after_val_epoch:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+after_run:
+(VERY_LOW    ) TextLoggerHook                     
+ -------------------- 
+2022-04-29 17:21:34,895 - mmdet - INFO - workflow: [('train', 1)], max: 12 epochs
+2022-04-29 17:21:34,896 - mmdet - INFO - Checkpoints will be saved to /home/zhuzeyu/pedestrian-counting/work_dirs/atss_r50_dcd_fpn_1x_coco by HardDiskBackend.
+/home/zhuzeyu/miniconda3/envs/det/lib/python3.7/site-packages/torch/nn/functional.py:718: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at  /opt/conda/conda-bld/pytorch_1623448224956/work/c10/core/TensorImpl.h:1156.)
+  return torch.max_pool2d(input, kernel_size, stride, padding, dilation, ceil_mode)
+/home/zhuzeyu/miniconda3/envs/det/lib/python3.7/site-packages/torch/nn/functional.py:3487: UserWarning: nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.
+  warnings.warn("nn.functional.upsample is deprecated. Use nn.functional.interpolate instead.")
+/home/zhuzeyu/miniconda3/envs/det/lib/python3.7/site-packages/torch/nn/functional.py:3613: UserWarning: Default upsampling behavior when mode=bilinear is changed to align_corners=False since 0.4.0. Please specify align_corners=True if the old behavior is desired. See the documentation of nn.Upsample for details.
+  "See the documentation of nn.Upsample for details.".format(mode)
+2022-04-29 17:22:12,336 - mmdet - INFO - Epoch [1][50/3465]	lr: 1.079e-04, eta: 8:36:30, time: 0.746, data_time: 0.076, memory: 8400, loss_cls: 0.8665, loss_bbox: 1.7008, loss_centerness: 0.6570, loss: 3.2243
+2022-04-29 17:22:46,308 - mmdet - INFO - Epoch [1][100/3465]	lr: 2.078e-04, eta: 8:12:47, time: 0.679, data_time: 0.029, memory: 8400, loss_cls: 0.6745, loss_bbox: 1.5491, loss_centerness: 0.6425, loss: 2.8661
+2022-04-29 17:23:20,277 - mmdet - INFO - Epoch [1][150/3465]	lr: 3.077e-04, eta: 8:04:30, time: 0.679, data_time: 0.031, memory: 8400, loss_cls: 0.6415, loss_bbox: 1.4953, loss_centerness: 0.6421, loss: 2.7788
+2022-04-29 17:23:54,322 - mmdet - INFO - Epoch [1][200/3465]	lr: 4.076e-04, eta: 8:00:19, time: 0.681, data_time: 0.027, memory: 8400, loss_cls: 0.6505, loss_bbox: 1.4330, loss_centerness: 0.6582, loss: 2.7418
+2022-04-29 17:24:28,316 - mmdet - INFO - Epoch [1][250/3465]	lr: 5.075e-04, eta: 7:57:28, time: 0.680, data_time: 0.029, memory: 8400, loss_cls: 0.6402, loss_bbox: 1.4874, loss_centerness: 0.6340, loss: 2.7616
+2022-04-29 17:25:02,376 - mmdet - INFO - Epoch [1][300/3465]	lr: 6.074e-04, eta: 7:55:30, time: 0.681, data_time: 0.029, memory: 8400, loss_cls: 0.7310, loss_bbox: 1.4814, loss_centerness: 0.6652, loss: 2.8776
+2022-04-29 17:25:36,380 - mmdet - INFO - Epoch [1][350/3465]	lr: 7.073e-04, eta: 7:53:51, time: 0.680, data_time: 0.027, memory: 8400, loss_cls: 0.6190, loss_bbox: 1.4216, loss_centerness: 0.6391, loss: 2.6797
+2022-04-29 17:26:10,474 - mmdet - INFO - Epoch [1][400/3465]	lr: 8.072e-04, eta: 7:52:37, time: 0.682, data_time: 0.030, memory: 8400, loss_cls: 0.6456, loss_bbox: 1.3982, loss_centerness: 0.6176, loss: 2.6615
+2022-04-29 17:26:44,789 - mmdet - INFO - Epoch [1][450/3465]	lr: 9.071e-04, eta: 7:51:51, time: 0.686, data_time: 0.029, memory: 8400, loss_cls: 0.5937, loss_bbox: 1.4149, loss_centerness: 0.6654, loss: 2.6741
+2022-04-29 17:27:18,943 - mmdet - INFO - Epoch [1][500/3465]	lr: 1.007e-03, eta: 7:50:55, time: 0.683, data_time: 0.032, memory: 8400, loss_cls: 0.7497, loss_bbox: 1.3805, loss_centerness: 0.6713, loss: 2.8015
+2022-04-29 17:27:52,906 - mmdet - INFO - Epoch [1][550/3465]	lr: 1.107e-03, eta: 7:49:49, time: 0.679, data_time: 0.029, memory: 8400, loss_cls: 0.7595, loss_bbox: 1.5221, loss_centerness: 0.6685, loss: 2.9501
+2022-04-29 17:28:27,000 - mmdet - INFO - Epoch [1][600/3465]	lr: 1.207e-03, eta: 7:48:57, time: 0.682, data_time: 0.030, memory: 8400, loss_cls: 0.6029, loss_bbox: 1.3681, loss_centerness: 0.6603, loss: 2.6313
+2022-04-29 17:29:00,984 - mmdet - INFO - Epoch [1][650/3465]	lr: 1.307e-03, eta: 7:48:01, time: 0.680, data_time: 0.029, memory: 8400, loss_cls: 0.6101, loss_bbox: 1.2993, loss_centerness: 0.6535, loss: 2.5629
+Corrupt JPEG data: premature end of data segment
+2022-04-29 17:29:35,000 - mmdet - INFO - Epoch [1][700/3465]	lr: 1.407e-03, eta: 7:47:10, time: 0.680, data_time: 0.031, memory: 8400, loss_cls: 0.5131, loss_bbox: 1.2812, loss_centerness: 0.6502, loss: 2.4445
+2022-04-29 17:30:09,089 - mmdet - INFO - Epoch [1][750/3465]	lr: 1.507e-03, eta: 7:46:25, time: 0.682, data_time: 0.028, memory: 8400, loss_cls: 0.5107, loss_bbox: 1.3196, loss_centerness: 0.6300, loss: 2.4603
+2022-04-29 17:30:43,186 - mmdet - INFO - Epoch [1][800/3465]	lr: 1.606e-03, eta: 7:45:42, time: 0.682, data_time: 0.028, memory: 8400, loss_cls: 0.5120, loss_bbox: 1.4027, loss_centerness: 0.6440, loss: 2.5587
+2022-04-29 17:31:17,276 - mmdet - INFO - Epoch [1][850/3465]	lr: 1.706e-03, eta: 7:44:59, time: 0.682, data_time: 0.030, memory: 8400, loss_cls: 0.5207, loss_bbox: 1.2587, loss_centerness: 0.6435, loss: 2.4228
+2022-04-29 17:31:51,356 - mmdet - INFO - Epoch [1][900/3465]	lr: 1.806e-03, eta: 7:44:17, time: 0.682, data_time: 0.029, memory: 8400, loss_cls: 0.5152, loss_bbox: 1.2227, loss_centerness: 0.6416, loss: 2.3795
+2022-04-29 17:32:25,346 - mmdet - INFO - Epoch [1][950/3465]	lr: 1.906e-03, eta: 7:43:32, time: 0.680, data_time: 0.028, memory: 8400, loss_cls: 0.5105, loss_bbox: 1.1670, loss_centerness: 0.6392, loss: 2.3167
+2022-04-29 17:32:59,302 - mmdet - INFO - Exp name: atss_r50_dcd_fpn_1x_coco.py
+2022-04-29 17:32:59,303 - mmdet - INFO - Epoch [1][1000/3465]	lr: 2.006e-03, eta: 7:42:47, time: 0.679, data_time: 0.028, memory: 8400, loss_cls: 0.5104, loss_bbox: 1.2430, loss_centerness: 0.6349, loss: 2.3884
+2022-04-29 17:33:33,286 - mmdet - INFO - Epoch [1][1050/3465]	lr: 2.106e-03, eta: 7:42:04, time: 0.680, data_time: 0.028, memory: 8400, loss_cls: 0.5121, loss_bbox: 1.2494, loss_centerness: 0.6412, loss: 2.4027
+2022-04-29 17:34:07,301 - mmdet - INFO - Epoch [1][1100/3465]	lr: 2.206e-03, eta: 7:41:23, time: 0.680, data_time: 0.030, memory: 8400, loss_cls: 0.4815, loss_bbox: 1.1388, loss_centerness: 0.6576, loss: 2.2779
+2022-04-29 17:34:41,242 - mmdet - INFO - Epoch [1][1150/3465]	lr: 2.306e-03, eta: 7:40:39, time: 0.679, data_time: 0.030, memory: 8400, loss_cls: 0.4950, loss_bbox: 1.2168, loss_centerness: 0.6466, loss: 2.3584
+2022-04-29 17:35:14,953 - mmdet - INFO - Epoch [1][1200/3465]	lr: 2.406e-03, eta: 7:39:49, time: 0.674, data_time: 0.027, memory: 8400, loss_cls: 0.5305, loss_bbox: 1.1981, loss_centerness: 0.6570, loss: 2.3856
+2022-04-29 17:35:48,684 - mmdet - INFO - Epoch [1][1250/3465]	lr: 2.506e-03, eta: 7:39:01, time: 0.675, data_time: 0.029, memory: 8400, loss_cls: 0.5015, loss_bbox: 1.2587, loss_centerness: 0.6324, loss: 2.3926
+2022-04-29 17:36:22,411 - mmdet - INFO - Epoch [1][1300/3465]	lr: 2.605e-03, eta: 7:38:14, time: 0.675, data_time: 0.026, memory: 8400, loss_cls: 0.5137, loss_bbox: 1.2186, loss_centerness: 0.6390, loss: 2.3713
+2022-04-29 17:36:55,983 - mmdet - INFO - Epoch [1][1350/3465]	lr: 2.705e-03, eta: 7:37:24, time: 0.671, data_time: 0.026, memory: 8400, loss_cls: 0.5242, loss_bbox: 1.2554, loss_centerness: 0.6363, loss: 2.4159
+2022-04-29 17:37:29,736 - mmdet - INFO - Epoch [1][1400/3465]	lr: 2.805e-03, eta: 7:36:39, time: 0.675, data_time: 0.027, memory: 8400, loss_cls: 0.6346, loss_bbox: 1.2210, loss_centerness: 0.6741, loss: 2.5298
+2022-04-29 17:38:03,587 - mmdet - INFO - Epoch [1][1450/3465]	lr: 2.905e-03, eta: 7:35:59, time: 0.677, data_time: 0.027, memory: 8400, loss_cls: 0.4951, loss_bbox: 1.1930, loss_centerness: 0.6580, loss: 2.3460
+2022-04-29 17:38:37,399 - mmdet - INFO - Epoch [1][1500/3465]	lr: 3.005e-03, eta: 7:35:17, time: 0.676, data_time: 0.026, memory: 8400, loss_cls: 0.5105, loss_bbox: 1.2033, loss_centerness: 0.6200, loss: 2.3338
+2022-04-29 17:39:11,167 - mmdet - INFO - Epoch [1][1550/3465]	lr: 3.105e-03, eta: 7:34:35, time: 0.675, data_time: 0.027, memory: 8400, loss_cls: 0.5160, loss_bbox: 1.2332, loss_centerness: 0.6365, loss: 2.3856
+2022-04-29 17:39:44,928 - mmdet - INFO - Epoch [1][1600/3465]	lr: 3.205e-03, eta: 7:33:53, time: 0.675, data_time: 0.027, memory: 8400, loss_cls: 0.5272, loss_bbox: 1.2238, loss_centerness: 0.6419, loss: 2.3930
+2022-04-29 17:40:18,668 - mmdet - INFO - Epoch [1][1650/3465]	lr: 3.305e-03, eta: 7:33:11, time: 0.675, data_time: 0.027, memory: 8400, loss_cls: 0.4954, loss_bbox: 1.2267, loss_centerness: 0.6530, loss: 2.3751
+2022-04-29 17:40:52,513 - mmdet - INFO - Epoch [1][1700/3465]	lr: 3.405e-03, eta: 7:32:32, time: 0.677, data_time: 0.026, memory: 8400, loss_cls: 0.5411, loss_bbox: 1.2323, loss_centerness: 0.6366, loss: 2.4100
+2022-04-29 17:41:26,275 - mmdet - INFO - Epoch [1][1750/3465]	lr: 3.505e-03, eta: 7:31:52, time: 0.675, data_time: 0.026, memory: 8400, loss_cls: 0.5610, loss_bbox: 1.1706, loss_centerness: 0.6126, loss: 2.3443
+2022-04-29 17:41:59,989 - mmdet - INFO - Epoch [1][1800/3465]	lr: 3.604e-03, eta: 7:31:11, time: 0.674, data_time: 0.028, memory: 8400, loss_cls: 0.5030, loss_bbox: 1.2211, loss_centerness: 0.6483, loss: 2.3725
+2022-04-29 17:42:33,553 - mmdet - INFO - Epoch [1][1850/3465]	lr: 3.704e-03, eta: 7:30:27, time: 0.671, data_time: 0.027, memory: 8400, loss_cls: 0.5013, loss_bbox: 1.2279, loss_centerness: 0.6230, loss: 2.3522
+2022-04-29 17:43:07,367 - mmdet - INFO - Epoch [1][1900/3465]	lr: 3.804e-03, eta: 7:29:49, time: 0.676, data_time: 0.030, memory: 8400, loss_cls: 0.4898, loss_bbox: 1.2596, loss_centerness: 0.6403, loss: 2.3898
+2022-04-29 17:43:40,949 - mmdet - INFO - Epoch [1][1950/3465]	lr: 3.904e-03, eta: 7:29:06, time: 0.672, data_time: 0.029, memory: 8400, loss_cls: 0.5147, loss_bbox: 1.2218, loss_centerness: 0.6312, loss: 2.3677
+2022-04-29 17:44:14,669 - mmdet - INFO - Exp name: atss_r50_dcd_fpn_1x_coco.py
+2022-04-29 17:44:14,669 - mmdet - INFO - Epoch [1][2000/3465]	lr: 4.004e-03, eta: 7:28:26, time: 0.674, data_time: 0.028, memory: 8400, loss_cls: 0.5063, loss_bbox: 1.1859, loss_centerness: 0.6426, loss: 2.3348
+2022-04-29 17:44:48,278 - mmdet - INFO - Epoch [1][2050/3465]	lr: 4.104e-03, eta: 7:27:45, time: 0.672, data_time: 0.028, memory: 8400, loss_cls: 0.5228, loss_bbox: 1.1812, loss_centerness: 0.6212, loss: 2.3252
+2022-04-29 17:45:22,091 - mmdet - INFO - Epoch [1][2100/3465]	lr: 4.204e-03, eta: 7:27:08, time: 0.676, data_time: 0.026, memory: 8400, loss_cls: 0.5116, loss_bbox: 1.2244, loss_centerness: 0.6375, loss: 2.3735
+2022-04-29 17:45:55,784 - mmdet - INFO - Epoch [1][2150/3465]	lr: 4.304e-03, eta: 7:26:29, time: 0.674, data_time: 0.028, memory: 8400, loss_cls: 0.4902, loss_bbox: 1.2007, loss_centerness: 0.6388, loss: 2.3297
+2022-04-29 17:46:29,739 - mmdet - INFO - Epoch [1][2200/3465]	lr: 4.404e-03, eta: 7:25:54, time: 0.679, data_time: 0.024, memory: 8400, loss_cls: 0.4848, loss_bbox: 1.2289, loss_centerness: 0.6417, loss: 2.3554
+2022-04-29 17:47:03,495 - mmdet - INFO - Epoch [1][2250/3465]	lr: 4.504e-03, eta: 7:25:17, time: 0.675, data_time: 0.028, memory: 8400, loss_cls: 0.4887, loss_bbox: 1.2000, loss_centerness: 0.6554, loss: 2.3440
+2022-04-29 17:47:37,167 - mmdet - INFO - Epoch [1][2300/3465]	lr: 4.603e-03, eta: 7:24:38, time: 0.673, data_time: 0.030, memory: 8400, loss_cls: 0.5264, loss_bbox: 1.2493, loss_centerness: 0.6316, loss: 2.4073
+2022-04-29 17:48:10,924 - mmdet - INFO - Epoch [1][2350/3465]	lr: 4.703e-03, eta: 7:24:00, time: 0.675, data_time: 0.025, memory: 8400, loss_cls: 0.5074, loss_bbox: 1.1983, loss_centerness: 0.6449, loss: 2.3506
+2022-04-29 17:48:44,659 - mmdet - INFO - Epoch [1][2400/3465]	lr: 4.803e-03, eta: 7:23:23, time: 0.675, data_time: 0.026, memory: 8400, loss_cls: 0.4935, loss_bbox: 1.1964, loss_centerness: 0.6377, loss: 2.3276
+2022-04-29 17:49:18,207 - mmdet - INFO - Epoch [1][2450/3465]	lr: 4.903e-03, eta: 7:22:42, time: 0.671, data_time: 0.026, memory: 8400, loss_cls: 0.4933, loss_bbox: 1.2060, loss_centerness: 0.6262, loss: 2.3254
+2022-04-29 17:49:51,805 - mmdet - INFO - Epoch [1][2500/3465]	lr: 5.003e-03, eta: 7:22:03, time: 0.672, data_time: 0.025, memory: 8400, loss_cls: 0.5174, loss_bbox: 1.2125, loss_centerness: 0.6448, loss: 2.3748
+2022-04-29 17:50:25,501 - mmdet - INFO - Epoch [1][2550/3465]	lr: 5.103e-03, eta: 7:21:25, time: 0.674, data_time: 0.026, memory: 8400, loss_cls: 0.5165, loss_bbox: 1.1485, loss_centerness: 0.6470, loss: 2.3120
+2022-04-29 17:50:59,239 - mmdet - INFO - Epoch [1][2600/3465]	lr: 5.203e-03, eta: 7:20:49, time: 0.675, data_time: 0.026, memory: 8400, loss_cls: 0.5015, loss_bbox: 1.2301, loss_centerness: 0.6430, loss: 2.3746
+2022-04-29 17:51:32,967 - mmdet - INFO - Epoch [1][2650/3465]	lr: 5.303e-03, eta: 7:20:12, time: 0.675, data_time: 0.028, memory: 8400, loss_cls: 0.5113, loss_bbox: 1.2588, loss_centerness: 0.6220, loss: 2.3921
+2022-04-29 17:52:06,521 - mmdet - INFO - Epoch [1][2700/3465]	lr: 5.403e-03, eta: 7:19:33, time: 0.671, data_time: 0.024, memory: 8400, loss_cls: 0.5050, loss_bbox: 1.2153, loss_centerness: 0.6355, loss: 2.3558
+2022-04-29 17:52:40,215 - mmdet - INFO - Epoch [1][2750/3465]	lr: 5.503e-03, eta: 7:18:56, time: 0.674, data_time: 0.027, memory: 8400, loss_cls: 0.5354, loss_bbox: 1.2363, loss_centerness: 0.6382, loss: 2.4100
+2022-04-29 17:53:13,834 - mmdet - INFO - Epoch [1][2800/3465]	lr: 5.602e-03, eta: 7:18:18, time: 0.672, data_time: 0.027, memory: 8400, loss_cls: 0.5091, loss_bbox: 1.2093, loss_centerness: 0.6376, loss: 2.3561
+2022-04-29 17:53:47,506 - mmdet - INFO - Epoch [1][2850/3465]	lr: 5.702e-03, eta: 7:17:40, time: 0.673, data_time: 0.026, memory: 8400, loss_cls: 0.4873, loss_bbox: 1.1641, loss_centerness: 0.6588, loss: 2.3102
+2022-04-29 17:54:21,341 - mmdet - INFO - Epoch [1][2900/3465]	lr: 5.802e-03, eta: 7:17:06, time: 0.677, data_time: 0.028, memory: 8400, loss_cls: 0.4876, loss_bbox: 1.1755, loss_centerness: 0.6500, loss: 2.3131
+2022-04-29 17:54:55,135 - mmdet - INFO - Epoch [1][2950/3465]	lr: 5.902e-03, eta: 7:16:30, time: 0.676, data_time: 0.027, memory: 8400, loss_cls: 0.5214, loss_bbox: 1.2282, loss_centerness: 0.6535, loss: 2.4031
+2022-04-29 17:55:28,838 - mmdet - INFO - Exp name: atss_r50_dcd_fpn_1x_coco.py
+2022-04-29 17:55:28,838 - mmdet - INFO - Epoch [1][3000/3465]	lr: 6.002e-03, eta: 7:15:54, time: 0.674, data_time: 0.028, memory: 8400, loss_cls: 0.4940, loss_bbox: 1.2176, loss_centerness: 0.6526, loss: 2.3642
+2022-04-29 17:56:02,535 - mmdet - INFO - Epoch [1][3050/3465]	lr: 6.102e-03, eta: 7:15:17, time: 0.674, data_time: 0.027, memory: 8400, loss_cls: 0.6254, loss_bbox: 1.2180, loss_centerness: 0.6478, loss: 2.4912
+2022-04-29 17:56:35,260 - mmdet - INFO - Epoch [1][3100/3465]	lr: 6.202e-03, eta: 7:14:29, time: 0.655, data_time: 0.028, memory: 8400, loss_cls: 16.8913, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 17:57:07,486 - mmdet - INFO - Epoch [1][3150/3465]	lr: 6.302e-03, eta: 7:13:35, time: 0.644, data_time: 0.028, memory: 8400, loss_cls: 20.8346, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 17:57:39,629 - mmdet - INFO - Epoch [1][3200/3465]	lr: 6.402e-03, eta: 7:12:41, time: 0.643, data_time: 0.027, memory: 8400, loss_cls: 20.9157, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 17:58:11,869 - mmdet - INFO - Epoch [1][3250/3465]	lr: 6.502e-03, eta: 7:11:48, time: 0.645, data_time: 0.030, memory: 8400, loss_cls: 21.2830, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 17:58:44,105 - mmdet - INFO - Epoch [1][3300/3465]	lr: 6.601e-03, eta: 7:10:56, time: 0.645, data_time: 0.027, memory: 8400, loss_cls: 20.8981, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 17:59:16,236 - mmdet - INFO - Epoch [1][3350/3465]	lr: 6.701e-03, eta: 7:10:04, time: 0.643, data_time: 0.027, memory: 8400, loss_cls: 21.0416, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 17:59:48,405 - mmdet - INFO - Epoch [1][3400/3465]	lr: 6.801e-03, eta: 7:09:12, time: 0.643, data_time: 0.027, memory: 8400, loss_cls: 21.2986, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 18:00:20,881 - mmdet - INFO - Epoch [1][3450/3465]	lr: 6.901e-03, eta: 7:08:25, time: 0.650, data_time: 0.026, memory: 8400, loss_cls: 20.7728, loss_bbox: nan, loss_centerness: nan, loss: nan
+2022-04-29 18:00:30,524 - mmdet - INFO - Saving checkpoint at 1 epochs
+[                                                  ] 0/2136, elapsed: 0s, ETA:[                                ] 1/2136, 3.0 task/s, elapsed: 0s, ETA:   701s[                                ] 2/2136, 4.9 task/s, elapsed: 0s, ETA:   438s[                                ] 3/2136, 6.1 task/s, elapsed: 0s, ETA:   351s[                                ] 4/2136, 6.9 task/s, elapsed: 1s, ETA:   307s[                                ] 5/2136, 7.6 task/s, elapsed: 1s, ETA:   282s[                                ] 6/2136, 8.1 task/s, elapsed: 1s, ETA:   264s[                                ] 7/2136, 8.4 task/s, elapsed: 1s, ETA:   252s[                                ] 8/2136, 8.8 task/s, elapsed: 1s, ETA:   243s[                                ] 9/2136, 9.1 task/s, elapsed: 1s, ETA:   235s[                               ] 10/2136, 9.2 task/s, elapsed: 1s, ETA:   232s[                               ] 11/2136, 9.4 task/s, elapsed: 1s, ETA:   227s[                               ] 12/2136, 9.5 task/s, elapsed: 1s, ETA:   223s[                               ] 13/2136, 9.7 task/s, elapsed: 1s, ETA:   220s[                               ] 14/2136, 9.8 task/s, elapsed: 1s, ETA:   218s[                               ] 15/2136, 9.9 task/s, elapsed: 2s, ETA:   215s[                               ] 16/2136, 9.9 task/s, elapsed: 2s, ETA:   215s[                               ] 17/2136, 9.9 task/s, elapsed: 2s, ETA:   214s[                              ] 18/2136, 10.0 task/s, elapsed: 2s, ETA:   213s[                              ] 19/2136, 10.0 task/s, elapsed: 2s, ETA:   212s[                              ] 20/2136, 10.0 task/s, elapsed: 2s, ETA:   211s[                              ] 21/2136, 10.1 task/s, elapsed: 2s, ETA:   210s[                              ] 22/2136, 10.1 task/s, elapsed: 2s, ETA:   208s[                              ] 23/2136, 10.2 task/s, elapsed: 2s, ETA:   207s[                              ] 24/2136, 10.3 task/s, elapsed: 2s, ETA:   205s[                              ] 25/2136, 10.3 task/s, elapsed: 2s, ETA:   204s[                              ] 26/2136, 10.3 task/s, elapsed: 3s, ETA:   204s[                              ] 27/2136, 10.3 task/s, elapsed: 3s, ETA:   205s[                              ] 28/2136, 10.3 task/s, elapsed: 3s, ETA:   205s[                              ] 29/2136, 10.3 task/s, elapsed: 3s, ETA:   204s[                              ] 30/2136, 10.3 task/s, elapsed: 3s, ETA:   205s[                              ] 31/2136, 10.2 task/s, elapsed: 3s, ETA:   207s[                              ] 32/2136, 10.2 task/s, elapsed: 3s, ETA:   207s[                              ] 33/2136, 10.1 task/s, elapsed: 3s, ETA:   208s[                              ] 34/2136, 10.1 task/s, elapsed: 3s, ETA:   207s[                              ] 35/2136, 10.2 task/s, elapsed: 3s, ETA:   207s[                              ] 36/2136, 10.2 task/s, elapsed: 4s, ETA:   206s[                              ] 37/2136, 10.3 task/s, elapsed: 4s, ETA:   205s[                              ] 38/2136, 10.3 task/s, elapsed: 4s, ETA:   204s[                              ] 39/2136, 10.3 task/s, elapsed: 4s, ETA:   203s[                              ] 40/2136, 10.4 task/s, elapsed: 4s, ETA:   202s[                              ] 41/2136, 10.4 task/s, elapsed: 4s, ETA:   201s[                              ] 42/2136, 10.4 task/s, elapsed: 4s, ETA:   201s[                              ] 43/2136, 10.4 task/s, elapsed: 4s, ETA:   200s[                              ] 44/2136, 10.5 task/s, elapsed: 4s, ETA:   200s[                              ] 45/2136, 10.5 task/s, elapsed: 4s, ETA:   200s[                              ] 46/2136, 10.5 task/s, elapsed: 4s, ETA:   200s[                              ] 47/2136, 10.5 task/s, elapsed: 4s, ETA:   199s[                              ] 48/2136, 10.5 task/s, elapsed: 5s, ETA:   199s[                              ] 49/2136, 10.5 task/s, elapsed: 5s, ETA:   198s[                              ] 50/2136, 10.5 task/s, elapsed: 5s, ETA:   198s[                              ] 51/2136, 10.6 task/s, elapsed: 5s, ETA:   197s[                              ] 52/2136, 10.6 task/s, elapsed: 5s, ETA:   197s[                              ] 53/2136, 10.6 task/s, elapsed: 5s, ETA:   196s[                              ] 54/2136, 10.6 task/s, elapsed: 5s, ETA:   196s[                              ] 55/2136, 10.6 task/s, elapsed: 5s, ETA:   195s[                              ] 56/2136, 10.7 task/s, elapsed: 5s, ETA:   195s[                              ] 57/2136, 10.7 task/s, elapsed: 5s, ETA:   195s[                              ] 58/2136, 10.7 task/s, elapsed: 5s, ETA:   194s[                              ] 59/2136, 10.7 task/s, elapsed: 6s, ETA:   195s[                              ] 60/2136, 10.7 task/s, elapsed: 6s, ETA:   194s[                              ] 61/2136, 10.7 task/s, elapsed: 6s, ETA:   194s[                              ] 62/2136, 10.7 task/s, elapsed: 6s, ETA:   193s[                              ] 63/2136, 10.7 task/s, elapsed: 6s, ETA:   193s[                              ] 64/2136, 10.7 task/s, elapsed: 6s, ETA:   193s[                              ] 65/2136, 10.7 task/s, elapsed: 6s, ETA:   193s[                              ] 66/2136, 10.7 task/s, elapsed: 6s, ETA:   193s[                              ] 67/2136, 10.7 task/s, elapsed: 6s, ETA:   193s[                              ] 68/2136, 10.8 task/s, elapsed: 6s, ETA:   192s[                              ] 69/2136, 10.8 task/s, elapsed: 6s, ETA:   192s[                              ] 70/2136, 10.8 task/s, elapsed: 6s, ETA:   192s[                              ] 71/2136, 10.8 task/s, elapsed: 7s, ETA:   192s[>                             ] 72/2136, 10.8 task/s, elapsed: 7s, ETA:   192s[>                             ] 73/2136, 10.8 task/s, elapsed: 7s, ETA:   191s[>                             ] 74/2136, 10.8 task/s, elapsed: 7s, ETA:   191s[>                             ] 75/2136, 10.8 task/s, elapsed: 7s, ETA:   191s[>                             ] 76/2136, 10.8 task/s, elapsed: 7s, ETA:   190s[>                             ] 77/2136, 10.8 task/s, elapsed: 7s, ETA:   190s[>                             ] 78/2136, 10.8 task/s, elapsed: 7s, ETA:   190s[>                             ] 79/2136, 10.8 task/s, elapsed: 7s, ETA:   191s[>                             ] 80/2136, 10.8 task/s, elapsed: 7s, ETA:   190s[>                             ] 81/2136, 10.8 task/s, elapsed: 7s, ETA:   190s[>                             ] 82/2136, 10.8 task/s, elapsed: 8s, ETA:   190s[>                             ] 83/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 84/2136, 10.9 task/s, elapsed: 8s, ETA:   189s[>                             ] 85/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 86/2136, 10.9 task/s, elapsed: 8s, ETA:   189s[>                             ] 87/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 88/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 89/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 90/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 91/2136, 10.8 task/s, elapsed: 8s, ETA:   189s[>                             ] 92/2136, 10.8 task/s, elapsed: 9s, ETA:   189s[>                             ] 93/2136, 10.8 task/s, elapsed: 9s, ETA:   189s[>                             ] 94/2136, 10.8 task/s, elapsed: 9s, ETA:   189s[>                             ] 95/2136, 10.8 task/s, elapsed: 9s, ETA:   189s[>                             ] 96/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                             ] 97/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                             ] 98/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                             ] 99/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                            ] 100/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                            ] 101/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                            ] 102/2136, 10.8 task/s, elapsed: 9s, ETA:   188s[>                           ] 103/2136, 10.8 task/s, elapsed: 10s, ETA:   188s[>                           ] 104/2136, 10.8 task/s, elapsed: 10s, ETA:   187s[>                           ] 105/2136, 10.8 task/s, elapsed: 10s, ETA:   188s[>                           ] 106/2136, 10.8 task/s, elapsed: 10s, ETA:   187s[>                           ] 107/2136, 10.9 task/s, elapsed: 10s, ETA:   187s[>                           ] 108/2136, 10.9 task/s, elapsed: 10s, ETA:   187s[>                           ] 109/2136, 10.9 task/s, elapsed: 10s, ETA:   186s[>                           ] 110/2136, 10.9 task/s, elapsed: 10s, ETA:   186s[>                           ] 111/2136, 10.9 task/s, elapsed: 10s, ETA:   186s[>                           ] 112/2136, 10.9 task/s, elapsed: 10s, ETA:   185s[>                           ] 113/2136, 10.9 task/s, elapsed: 10s, ETA:   185s[>                           ] 114/2136, 10.9 task/s, elapsed: 10s, ETA:   185s[>                           ] 115/2136, 11.0 task/s, elapsed: 11s, ETA:   185s[>                           ] 116/2136, 11.0 task/s, elapsed: 11s, ETA:   184s[>                           ] 117/2136, 11.0 task/s, elapsed: 11s, ETA:   184s[>                           ] 118/2136, 11.0 task/s, elapsed: 11s, ETA:   184s[>                           ] 119/2136, 11.0 task/s, elapsed: 11s, ETA:   183s[>                           ] 120/2136, 11.0 task/s, elapsed: 11s, ETA:   183s[>                           ] 121/2136, 11.0 task/s, elapsed: 11s, ETA:   183s[>                           ] 122/2136, 11.0 task/s, elapsed: 11s, ETA:   183s[>                           ] 123/2136, 11.0 task/s, elapsed: 11s, ETA:   182s[>                           ] 124/2136, 11.0 task/s, elapsed: 11s, ETA:   182s[>                           ] 125/2136, 11.1 task/s, elapsed: 11s, ETA:   182s[>                           ] 126/2136, 11.1 task/s, elapsed: 11s, ETA:   182s[>                           ] 127/2136, 11.1 task/s, elapsed: 11s, ETA:   181s[>                           ] 128/2136, 11.1 task/s, elapsed: 12s, ETA:   181s[>                           ] 129/2136, 11.1 task/s, elapsed: 12s, ETA:   181s[>                           ] 130/2136, 11.1 task/s, elapsed: 12s, ETA:   181s[>                           ] 131/2136, 11.1 task/s, elapsed: 12s, ETA:   181s[>                           ] 132/2136, 11.1 task/s, elapsed: 12s, ETA:   181s[>                           ] 133/2136, 11.1 task/s, elapsed: 12s, ETA:   181s[>                           ] 134/2136, 11.1 task/s, elapsed: 12s, ETA:   180s[>                           ] 135/2136, 11.1 task/s, elapsed: 12s, ETA:   180s[>                           ] 136/2136, 11.1 task/s, elapsed: 12s, ETA:   180s[>                           ] 137/2136, 11.1 task/s, elapsed: 12s, ETA:   180s[>                           ] 138/2136, 11.1 task/s, elapsed: 12s, ETA:   180s[>                           ] 139/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 140/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 141/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 142/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 143/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 144/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 145/2136, 11.1 task/s, elapsed: 13s, ETA:   180s[>                           ] 146/2136, 11.0 task/s, elapsed: 13s, ETA:   180s[>                           ] 147/2136, 11.0 task/s, elapsed: 13s, ETA:   180s[>                           ] 148/2136, 11.0 task/s, elapsed: 13s, ETA:   180s[>                           ] 149/2136, 11.0 task/s, elapsed: 14s, ETA:   181s[>                           ] 150/2136, 11.0 task/s, elapsed: 14s, ETA:   181s[>                           ] 151/2136, 11.0 task/s, elapsed: 14s, ETA:   181s[>                           ] 152/2136, 11.0 task/s, elapsed: 14s, ETA:   181s[>>                          ] 153/2136, 11.0 task/s, elapsed: 14s, ETA:   181s[>>                          ] 154/2136, 11.0 task/s, elapsed: 14s, ETA:   181s[>>                          ] 155/2136, 11.0 task/s, elapsed: 14s, ETA:   180s[>>                          ] 156/2136, 11.0 task/s, elapsed: 14s, ETA:   180s[>>                          ] 157/2136, 11.0 task/s, elapsed: 14s, ETA:   180s[>>                          ] 158/2136, 11.0 task/s, elapsed: 14s, ETA:   180s[>>                          ] 159/2136, 11.0 task/s, elapsed: 14s, ETA:   180s[>>                          ] 160/2136, 11.0 task/s, elapsed: 15s, ETA:   179s[>>                          ] 161/2136, 11.0 task/s, elapsed: 15s, ETA:   179s[>>                          ] 162/2136, 11.0 task/s, elapsed: 15s, ETA:   179s[>>                          ] 163/2136, 11.0 task/s, elapsed: 15s, ETA:   179s[>>                          ] 164/2136, 11.0 task/s, elapsed: 15s, ETA:   179s[>>                          ] 165/2136, 11.0 task/s, elapsed: 15s, ETA:   179s[>>                          ] 166/2136, 11.0 task/s, elapsed: 15s, ETA:   178s[>>                          ] 167/2136, 11.0 task/s, elapsed: 15s, ETA:   178s[>>                          ] 168/2136, 11.1 task/s, elapsed: 15s, ETA:   178s[>>                          ] 169/2136, 11.1 task/s, elapsed: 15s, ETA:   178s[>>                          ] 170/2136, 11.1 task/s, elapsed: 15s, ETA:   178s[>>                          ] 171/2136, 11.1 task/s, elapsed: 15s, ETA:   177s[>>                          ] 172/2136, 11.1 task/s, elapsed: 16s, ETA:   177s[>>                          ] 173/2136, 11.1 task/s, elapsed: 16s, ETA:   177s[>>                          ] 174/2136, 11.1 task/s, elapsed: 16s, ETA:   177s[>>                          ] 175/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 176/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 177/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 178/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 179/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 180/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 181/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 182/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 183/2136, 11.1 task/s, elapsed: 16s, ETA:   176s[>>                          ] 184/2136, 11.1 task/s, elapsed: 17s, ETA:   176s[>>                          ] 185/2136, 11.1 task/s, elapsed: 17s, ETA:   175s[>>                          ] 186/2136, 11.1 task/s, elapsed: 17s, ETA:   175s[>>                          ] 187/2136, 11.1 task/s, elapsed: 17s, ETA:   175s[>>                          ] 188/2136, 11.1 task/s, elapsed: 17s, ETA:   175s[>>                          ] 189/2136, 11.1 task/s, elapsed: 17s, ETA:   175s[>>                          ] 190/2136, 11.1 task/s, elapsed: 17s, ETA:   175s[>>                          ] 191/2136, 11.1 task/s, elapsed: 17s, ETA:   174s[>>                          ] 192/2136, 11.2 task/s, elapsed: 17s, ETA:   174s[>>                          ] 193/2136, 11.2 task/s, elapsed: 17s, ETA:   174s[>>                          ] 194/2136, 11.1 task/s, elapsed: 17s, ETA:   174s[>>                          ] 195/2136, 11.1 task/s, elapsed: 18s, ETA:   174s[>>                          ] 196/2136, 11.1 task/s, elapsed: 18s, ETA:   174s[>>                          ] 197/2136, 11.1 task/s, elapsed: 18s, ETA:   175s[>>                          ] 198/2136, 11.1 task/s, elapsed: 18s, ETA:   174s[>>                          ] 199/2136, 11.1 task/s, elapsed: 18s, ETA:   174s
