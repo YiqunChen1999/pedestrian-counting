@@ -67,8 +67,8 @@ python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py --cfg-options "optimi
 | Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      |
 |--------------------------------------------|-----------|--------------|
 | Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |
-| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    34.38%    |
-| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    61.20%    |
+| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |
+| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |
 | Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |
 
 结论：动态卷积还是有一定的效果的。
