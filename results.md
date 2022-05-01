@@ -36,7 +36,7 @@
 | Model       | lr    | batch size | policy     | MR@R   | MR@S   | MR@RO  | MR@All |
 |-------------|-------|------------|------------|--------|--------|--------|--------|
 | ATSS-Res50  | 0.005 | 16         | 1x         | 32.45% | 67.55% | 68.79% | 41.96% |
-| ATSS-Res50  | 0.005 | 16         | mstrain-3x |        |        |        |        |
+| ATSS-Res50  | 0.005 | 16         | mstrain-3x | 29.43% | 59.96% | 65.14% | 39.00% |
 | ATSS-Res101 | 0.005 | 16         | 1x         |        |        |        |        |
 | ATSS-Res101 | 0.005 | 16         | mstrain-3x |        |        |        |        |
 
@@ -206,6 +206,35 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r5
 | Average Recall     (AR) | IoU=0.50:0.95 | area= small | maxDets=100 | 0.127 |
 | Average Recall     (AR) | IoU=0.50:0.95 | area=medium | maxDets=100 | 0.473 |
 | Average Recall     (AR) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.757 |
+
+### 2.1. configs/atss/atss_r50_fpn_mstrain_800-1024_3x_dhd_ped_campus.py
+
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r50_fpn_mstrain_800-1024_3x_dhd_ped_campus.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
+```
+
+| Miss Rate                                  | Value  |
+|--------------------------------------------|--------|
+| Average Miss Rate  (MR) @ Reasonable       | 29.43% |
+| Average Miss Rate  (MR) @ ReasonableSmall  | 59.96% |
+| Average Miss Rate  (MR) @ ReasonableHeavy  | 65.14% |
+| Average Miss Rate  (MR) @ All              | 39.00% |
+
+| AP & AR                 | IoU           | area        | maxDets     | Value |
+|-------------------------|---------------|-------------|-------------|-------|
+| Average Precision  (AP) | IoU=0.50:0.95 | area=   all | maxDets=100 | 0.583 |
+| Average Precision  (AP) | IoU=0.50      | area=   all | maxDets=100 | 0.858 |
+| Average Precision  (AP) | IoU=0.75      | area=   all | maxDets=100 | 0.630 |
+| Average Precision  (AP) | IoU=0.50:0.95 | area= small | maxDets=100 | 0.069 |
+| Average Precision  (AP) | IoU=0.50:0.95 | area=medium | maxDets=100 | 0.382 |
+| Average Precision  (AP) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.720 |
+| Average Recall     (AR) | IoU=0.50:0.95 | area=   all | maxDets=  1 | 0.124 |
+| Average Recall     (AR) | IoU=0.50:0.95 | area=   all | maxDets= 10 | 0.540 |
+| Average Recall     (AR) | IoU=0.50:0.95 | area=   all | maxDets=100 | 0.654 |
+| Average Recall     (AR) | IoU=0.50:0.95 | area= small | maxDets=100 | 0.170 |
+| Average Recall     (AR) | IoU=0.50:0.95 | area=medium | maxDets=100 | 0.508 |
+| Average Recall     (AR) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.777 |
 
 ## 3. 其他数据集
 ### 3.1. 配置文件路径
