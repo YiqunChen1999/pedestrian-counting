@@ -11,6 +11,7 @@
 
 ## 更新日志
 
+- 2022-05-04：增加了基本教程 [tutorial.md](./tutorial.md)
 - 2022-05-01：增加了 DHD-Ped-campus 的 baselines（ATSS-Res50-1x，ATSS-Res50-mstrain-3x）。
 - 2022-04-30：更新了 [results.md](./results.md) 文档，所有实验结果均存放于此。
 - 2022-04-30：更新了 baseline （多尺度训练，3x policy）并增加了动态卷积的模块与配置。
