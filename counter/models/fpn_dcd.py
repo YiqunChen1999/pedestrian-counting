@@ -37,8 +37,8 @@ class conv_dy(BaseModule):
         # 不同的权重计算的卷积结果
         y1 = self.conv2d_1(x)
         y2 = self.conv2d_2(x)
-        y3 = self.conv2d_2(x)
-        y4 = self.conv2d_2(x)
+        y3 = self.conv2d_3(x)
+        y4 = self.conv2d_4(x)
 
 
         # 计算加权和
