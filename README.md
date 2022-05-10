@@ -8,7 +8,7 @@
 **注意：** 基础流程请参考 @陈逸群 编写的文档，本文档主要目的在于介绍新增的动态卷积应该如何添加及相关注意事项。
 
 ## 更新日志
-
+- 2022-05-10：更新了实验结果与FPN_dcd模块的代码
 - 2022-04-30：发布 动态卷积代码 与使用说明。
 
 ## 1. 代码说明
@@ -64,12 +64,12 @@ python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py --cfg-options "optimi
 
 #### 2.1.1. configs/atss/atss_r50_dcd_fpn_1x_coco.py
 
-| Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      |
-|--------------------------------------------|-----------|--------------|
-| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |
-| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |
-| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |
-| Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |
+| Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      | fpn_dcd<br>(all conv)|
+|--------------------------------------------|-----------|--------------|---------------------------------------|
+| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |<b>24.96%|
+| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |<b>34.61%|
+| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |<b>61.31%|
+| Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |<b>41.57%|
 
 结论：动态卷积还是有一定的效果的。
 （Miss Rate都是越低越好）
