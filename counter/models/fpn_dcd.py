@@ -7,9 +7,10 @@ from mmcv.runner import BaseModule, auto_fp16
 from mmdet.models.builder import NECKS
 
 class conv_dy(BaseModule):
-    def __init__(self, inplanes, planes, kernel_size, stride, padding, bias=False):
+    def __init__(self, inplanes, planes, kernel_size, stride, padding, bias=False, K=4, t=30):
         super(conv_dy,self).__init__()
-        K = 4
+        self.t = t
+        self.K = K
         self.avg_pool = nn.AdaptiveAvgPool2d(1)  
 
         self.fc = nn.Sequential(
@@ -18,11 +19,14 @@ class conv_dy(BaseModule):
             nn.Linear(int(inplanes/4), K, bias=False),
         ) 
         self.softmax = nn.Softmax(dim = 1)
-        for i in range(1,K+1,1):
-            setattr(self, 'conv2d_'+str(i), nn.Conv2d(in_channels=inplanes, out_channels=planes, kernel_size=kernel_size, stride=stride, padding=padding,bias=bias))
+        self.conv_list = nn.ModuleList([nn.Conv2d(in_channels=inplanes, out_channels=planes, kernel_size=kernel_size,\
+             stride=stride, padding=padding,bias=bias) for i in range(K)])
+        # for i in range(1,K+1,1):
+        #     setattr(self, 'conv2d_'+str(i), nn.Conv2d(in_channels=inplanes, out_channels=planes, kernel_size=kernel_size, stride=stride, padding=padding,bias=bias))
  
     def forward(self, x):
-        t = 30
+        t = self.t
+        K = self.K
         # 计算权重 t是退火的温度
         pi = self.avg_pool(x)
         batch, c,_,_=pi.size()
@@ -31,17 +35,28 @@ class conv_dy(BaseModule):
         pi = self.softmax(pi)
         h,w = pi.size()
         # 不同的权重计算的卷积结果
-        y1 = self.conv2d_1(x)
-        y2 = self.conv2d_2(x)
-        y3 = self.conv2d_3(x)
-        y4 = self.conv2d_4(x)
+        y_list = []
+        for i, conv2d in enumerate(self.conv_list):
+            y_layer = conv2d(x)
+            y_list.append(y_layer)
+
+        # y1 = self.conv2d_1(x)
+        # y2 = self.conv2d_2(x)
+        # y3 = self.conv2d_3(x)
+        # y4 = self.conv2d_4(x)
 
 
         # 计算加权和
-        y = y1*pi[:,0].expand(1,1,1,h).reshape(h,1,1,1)\
-            +y2*pi[:,1].expand(1,1,1,h).reshape(h,1,1,1)\
-            +y3*pi[:,2].expand(1,1,1,h).reshape(h,1,1,1)\
-            +y4*pi[:,3].expand(1,1,1,h).reshape(h,1,1,1)
+        for i, y_layer in enumerate(y_list):
+            if(i == 0):
+                y = y_layer*pi[:,i].expand(1,1,1,h).reshape(h,1,1,1)
+            else:
+                y = y + y_layer*pi[:,i].expand(1,1,1,h).reshape(h,1,1,1)
+
+        # y = y1*pi[:,0].expand(1,1,1,h).reshape(h,1,1,1)\
+        #     +y2*pi[:,1].expand(1,1,1,h).reshape(h,1,1,1)\
+        #     +y3*pi[:,2].expand(1,1,1,h).reshape(h,1,1,1)\
+        #     +y4*pi[:,3].expand(1,1,1,h).reshape(h,1,1,1)
         return y
 
 @NECKS.register_module()
@@ -100,6 +115,8 @@ class FPN_dcd(BaseModule):
                  in_channels,
                  out_channels,
                  num_outs,
+                 K=4,
+                 t=30,
                  start_level=0,
                  end_level=-1,
                  add_extra_convs=False,
@@ -149,14 +166,18 @@ class FPN_dcd(BaseModule):
                 out_channels,
                 1,
                 stride=1,
-                padding=0
+                padding=0,
+                K=K,
+                t=t
                 )
             fpn_conv = conv_dy(
                 out_channels,
                 out_channels,
                 3,
                 stride=1,
-                padding=1)
+                padding=1,
+                K=K,
+                t=t)
 
             self.lateral_convs.append(l_conv)
             self.fpn_convs.append(fpn_conv)
@@ -174,7 +195,9 @@ class FPN_dcd(BaseModule):
                     out_channels,
                     3,
                     stride=2,
-                    padding=1)
+                    padding=1,
+                    K=K,
+                    t=t)
                 self.fpn_convs.append(extra_fpn_conv)
 
     @auto_fp16()
