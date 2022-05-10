@@ -73,7 +73,9 @@ python tools/train.py configs/atss/atss_r50_fpn_1x_coco.py --cfg-options "optimi
  
 
 all conv    : 表示替换fpn中的所有卷积层
+ 
 only smooth ：表示只替换fpn中的smooth卷积层
+ 
 结论：动态卷积还是有一定的效果的。
 （Miss Rate都是越低越好）
 
