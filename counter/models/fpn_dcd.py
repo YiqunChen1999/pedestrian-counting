@@ -1,18 +1,16 @@
-'''FPN in PyTorch.
-See the paper "Feature Pyramid Networks for Object Detection" for more details.
-'''
-import torch
+# Copyright (c) OpenMMLab. All rights reserved.
 import torch.nn as nn
 import torch.nn.functional as F
+from mmcv.cnn import ConvModule
+from mmcv.runner import BaseModule, auto_fp16
 
-from torch.autograd import Variable
 from mmdet.models.builder import NECKS
-from mmcv.runner import BaseModule
 
 class conv_dy(BaseModule):
-    def __init__(self, inplanes, planes, kernel_size, stride, padding, bias=False):
+    def __init__(self, inplanes, planes, kernel_size, stride, padding, bias=False, K=4, t=30):
         super(conv_dy,self).__init__()
-        K = 4
+        self.t = t
+        self.K = K
         self.avg_pool = nn.AdaptiveAvgPool2d(1)  
 
         self.fc = nn.Sequential(
@@ -21,11 +19,14 @@ class conv_dy(BaseModule):
             nn.Linear(int(inplanes/4), K, bias=False),
         ) 
         self.softmax = nn.Softmax(dim = 1)
-        for i in range(1,K+1,1):
-            setattr(self, 'conv2d_'+str(i), nn.Conv2d(in_channels=inplanes, out_channels=planes, kernel_size=kernel_size, stride=stride, padding=padding,bias=bias))
+        self.conv_list = nn.ModuleList([nn.Conv2d(in_channels=inplanes, out_channels=planes, kernel_size=kernel_size,\
+             stride=stride, padding=padding,bias=bias) for i in range(K)])
+        # for i in range(1,K+1,1):
+        #     setattr(self, 'conv2d_'+str(i), nn.Conv2d(in_channels=inplanes, out_channels=planes, kernel_size=kernel_size, stride=stride, padding=padding,bias=bias))
  
     def forward(self, x):
-        t = 30
+        t = self.t
+        K = self.K
         # 计算权重 t是退火的温度
         pi = self.avg_pool(x)
         batch, c,_,_=pi.size()
@@ -34,129 +35,222 @@ class conv_dy(BaseModule):
         pi = self.softmax(pi)
         h,w = pi.size()
         # 不同的权重计算的卷积结果
-        y1 = self.conv2d_1(x)
-        y2 = self.conv2d_2(x)
-        y3 = self.conv2d_3(x)
-        y4 = self.conv2d_4(x)
+        y_list = []
+        for i, conv2d in enumerate(self.conv_list):
+            y_layer = conv2d(x)
+            y_list.append(y_layer)
+
+        # y1 = self.conv2d_1(x)
+        # y2 = self.conv2d_2(x)
+        # y3 = self.conv2d_3(x)
+        # y4 = self.conv2d_4(x)
 
 
         # 计算加权和
-        y = y1*pi[:,0].expand(1,1,1,h).reshape(h,1,1,1)\
-            +y2*pi[:,1].expand(1,1,1,h).reshape(h,1,1,1)\
-            +y3*pi[:,2].expand(1,1,1,h).reshape(h,1,1,1)\
-            +y4*pi[:,3].expand(1,1,1,h).reshape(h,1,1,1)
+        for i, y_layer in enumerate(y_list):
+            if(i == 0):
+                y = y_layer*pi[:,i].expand(1,1,1,h).reshape(h,1,1,1)
+            else:
+                y = y + y_layer*pi[:,i].expand(1,1,1,h).reshape(h,1,1,1)
+
+        # y = y1*pi[:,0].expand(1,1,1,h).reshape(h,1,1,1)\
+        #     +y2*pi[:,1].expand(1,1,1,h).reshape(h,1,1,1)\
+        #     +y3*pi[:,2].expand(1,1,1,h).reshape(h,1,1,1)\
+        #     +y4*pi[:,3].expand(1,1,1,h).reshape(h,1,1,1)
         return y
-
-
-class Bottleneck(nn.Module):
-    expansion = 4
-
-    def __init__(self, in_planes, planes, stride=1):
-        super(Bottleneck, self).__init__()
-        self.conv1 = conv_dy(in_planes, planes, kernel_size=1, stride = 1, padding=0, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = conv_dy(planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = conv_dy(planes, self.expansion*planes, kernel_size=1, stride = 1, padding=0, bias=False)
-        self.bn3 = nn.BatchNorm2d(self.expansion*planes)
-
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion*planes:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion*planes, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion*planes)
-            )
-
-    def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = F.relu(self.bn2(self.conv2(out)))
-        out = self.bn3(self.conv3(out))
-        out += self.shortcut(x)
-        out = F.relu(out)
-        return out
 
 @NECKS.register_module()
 class FPN_dcd(BaseModule):
-    def __init__(self, *args, **kwds):
-        super(FPN_dcd, self).__init__()
-        '''self.in_planes = 64
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
-        num_blocks = [2,2,2,2]
-        # Bottom-up layers
-        self.layer1 = self._make_layer(  64, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer( 128, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer( 256, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer( 512, num_blocks[3], stride=2)'''
+    r"""Feature Pyramid Network.
 
-        # Top layer
-        self.toplayer = conv_dy(2048, 256, kernel_size=1, stride=1, padding=0)  # Reduce channels
+    This is an implementation of paper `Feature Pyramid Networks for Object
+    Detection <https://arxiv.org/abs/1612.03144>`_.
 
-        # Smooth layers
-        self.smooth1 = conv_dy(256, 256, kernel_size=3, stride=1, padding=1)
-        self.smooth2 = conv_dy(256, 256, kernel_size=3, stride=1, padding=1)
-        self.smooth3 = conv_dy(256, 256, kernel_size=3, stride=1, padding=1)
+    Args:
+        in_channels (list[int]): Number of input channels per scale.
+        out_channels (int): Number of output channels (used at each scale).
+        num_outs (int): Number of output scales.
+        start_level (int): Index of the start input backbone level used to
+            build the feature pyramid. Default: 0.
+        end_level (int): Index of the end input backbone level (exclusive) to
+            build the feature pyramid. Default: -1, which means the last level.
+        add_extra_convs (bool | str): If bool, it decides whether to add conv
+            layers on top of the original feature maps. Default to False.
+            If True, it is equivalent to `add_extra_convs='on_input'`.
+            If str, it specifies the source feature map of the extra convs.
+            Only the following options are allowed
 
-        # Lateral layers
-        self.latlayer1 = conv_dy(1024, 256, kernel_size=1, stride=1, padding=0)
-        self.latlayer2 = conv_dy( 512, 256, kernel_size=1, stride=1, padding=0)
-        self.latlayer3 = nn.Conv2d( 256, 256, kernel_size=1, stride=1, padding=0)
-        
-        #extra_layers
-        self.extra1 = conv_dy(2048, 256, kernel_size=3, stride=2, padding=1)
-        self.extra2 = conv_dy(2048, 256, kernel_size=3, stride=2, padding=1)
+            - 'on_input': Last feat map of neck inputs (i.e. backbone feature).
+            - 'on_lateral': Last feature map after lateral convs.
+            - 'on_output': The last output feature map after fpn convs.
+        relu_before_extra_convs (bool): Whether to apply relu before the extra
+            conv. Default: False.
+        no_norm_on_lateral (bool): Whether to apply norm on lateral.
+            Default: False.
+        conv_cfg (dict): Config dict for convolution layer. Default: None.
+        norm_cfg (dict): Config dict for normalization layer. Default: None.
+        act_cfg (dict): Config dict for activation layer in ConvModule.
+            Default: None.
+        upsample_cfg (dict): Config dict for interpolate layer.
+            Default: dict(mode='nearest').
+        init_cfg (dict or list[dict], optional): Initialization config dict.
 
-    '''def _make_layer(self,planes, num_blocks, stride):
-        strides = [stride] + [1]*(num_blocks-1)
-        layers = []
-        for stride in strides:
-            layers.append(Bottleneck(self.in_planes, planes, stride))
-            self.in_planes = planes * Bottleneck.expansion
-        return nn.Sequential(*layers)'''
+    Example:
+        >>> import torch
+        >>> in_channels = [2, 3, 5, 7]
+        >>> scales = [340, 170, 84, 43]
+        >>> inputs = [torch.rand(1, c, s, s)
+        ...           for c, s in zip(in_channels, scales)]
+        >>> self = FPN(in_channels, 11, len(in_channels)).eval()
+        >>> outputs = self.forward(inputs)
+        >>> for i in range(len(outputs)):
+        ...     print(f'outputs[{i}].shape = {outputs[i].shape}')
+        outputs[0].shape = torch.Size([1, 11, 340, 340])
+        outputs[1].shape = torch.Size([1, 11, 170, 170])
+        outputs[2].shape = torch.Size([1, 11, 84, 84])
+        outputs[3].shape = torch.Size([1, 11, 43, 43])
+    """
 
-    def _upsample_add(self, x, y):
-        '''Upsample and add two feature maps.
-        Args:
-          x: (Variable) top feature map to be upsampled.
-          y: (Variable) lateral feature map.
-        Returns:
-          (Variable) added feature map.
-        Note in PyTorch, when input size is odd, the upsampled feature map
-        with `F.upsample(..., scale_factor=2, mode='nearest')`
-        maybe not equal to the lateral feature map size.
-        e.g.
-        original input size: [N,_,15,15] ->
-        conv2d feature map size: [N,_,8,8] ->
-        upsampled feature map size: [N,_,16,16]
-        So we choose bilinear upsample which supports arbitrary output sizes.
-        '''
-        _,_,H,W = y.size()
-        return F.upsample(x, size=(H,W), mode='bilinear') + y
+    def __init__(self,
+                 in_channels,
+                 out_channels,
+                 num_outs,
+                 K=4,
+                 t=30,
+                 start_level=0,
+                 end_level=-1,
+                 add_extra_convs=False,
+                 relu_before_extra_convs=False,
+                 no_norm_on_lateral=False,
+                 conv_cfg=None,
+                 norm_cfg=None,
+                 act_cfg=None,
+                 upsample_cfg=dict(mode='nearest'),
+                 init_cfg=dict(
+                     type='Xavier', layer='Conv2d', distribution='uniform')):
+        super(FPN_dcd, self).__init__(init_cfg)
+        assert isinstance(in_channels, list)
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.num_ins = len(in_channels)
+        self.num_outs = num_outs
+        self.relu_before_extra_convs = relu_before_extra_convs
+        self.no_norm_on_lateral = no_norm_on_lateral
+        self.fp16_enabled = False
+        self.upsample_cfg = upsample_cfg.copy()
 
-    def forward(self, x):
-        
-        #laterals_layer
-        c6 = self.toplayer(x[3])
-        p5 = self.smooth1(c6)
-        c5 = self._upsample_add(c6, self.latlayer1(x[2]))
-        p4 = self.smooth2(c5)
-        c4 = self._upsample_add(c5, self.latlayer2(x[1]))
-        p3 = self.smooth3(c4)
-        #extra_layer
-        p2 = self.extra1(x[3])
-        p1 = self.extra2(x[3])
+        if end_level == -1:
+            self.backbone_end_level = self.num_ins
+            assert num_outs >= self.num_ins - start_level
+        else:
+            # if end_level < inputs, no extra level is allowed
+            self.backbone_end_level = end_level
+            assert end_level <= len(in_channels)
+            assert num_outs == end_level - start_level
+        self.start_level = start_level
+        self.end_level = end_level
+        self.add_extra_convs = add_extra_convs
+        assert isinstance(add_extra_convs, (str, bool))
+        if isinstance(add_extra_convs, str):
+            # Extra_convs_source choices: 'on_input', 'on_lateral', 'on_output'
+            assert add_extra_convs in ('on_input', 'on_lateral', 'on_output')
+        elif add_extra_convs:  # True
+            self.add_extra_convs = 'on_input'
 
-        return (p1, p2, p3, p4, p5)
+        self.lateral_convs = nn.ModuleList()
+        self.fpn_convs = nn.ModuleList()
 
+        for i in range(self.start_level, self.backbone_end_level):
+            l_conv = conv_dy(
+                in_channels[i],
+                out_channels,
+                1,
+                stride=1,
+                padding=0,
+                K=K,
+                t=t
+                )
+            fpn_conv = conv_dy(
+                out_channels,
+                out_channels,
+                3,
+                stride=1,
+                padding=1,
+                K=K,
+                t=t)
 
-"""def FPN101():
-    # return FPN(Bottleneck, [2,4,23,3])
-    return FPN_dcd()
-def test():
-    net = FPN101()
-    fms = net((Variable(torch.randn(1,256,600,600)),\
-        Variable(torch.randn(1,512,300,300)),Variable(torch.randn(1,1024,150,150)),Variable(torch.randn(1,2048,75,75))))
-    for fm in fms:
-        print(fm.size())
-test()"""
+            self.lateral_convs.append(l_conv)
+            self.fpn_convs.append(fpn_conv)
 
+        # add extra conv layers (e.g., RetinaNet)
+        extra_levels = num_outs - self.backbone_end_level + self.start_level
+        if self.add_extra_convs and extra_levels >= 1:
+            for i in range(extra_levels):
+                if i == 0 and self.add_extra_convs == 'on_input':
+                    in_channels = self.in_channels[self.backbone_end_level - 1]
+                else:
+                    in_channels = out_channels
+                extra_fpn_conv = conv_dy(
+                    in_channels,
+                    out_channels,
+                    3,
+                    stride=2,
+                    padding=1,
+                    K=K,
+                    t=t)
+                self.fpn_convs.append(extra_fpn_conv)
+
+    @auto_fp16()
+    def forward(self, inputs):
+        """Forward function."""
+        assert len(inputs) == len(self.in_channels)
+
+        # build laterals
+        laterals = [
+            lateral_conv(inputs[i + self.start_level])
+            for i, lateral_conv in enumerate(self.lateral_convs)
+        ]
+
+        # build top-down path
+        used_backbone_levels = len(laterals)
+        for i in range(used_backbone_levels - 1, 0, -1):
+            # In some cases, fixing `scale factor` (e.g. 2) is preferred, but
+            #  it cannot co-exist with `size` in `F.interpolate`.
+            if 'scale_factor' in self.upsample_cfg:
+                # fix runtime error of "+=" inplace operation in PyTorch 1.10
+                laterals[i - 1] = laterals[i - 1] + F.interpolate(
+                    laterals[i], **self.upsample_cfg)
+            else:
+                prev_shape = laterals[i - 1].shape[2:]
+                laterals[i - 1] = laterals[i - 1] + F.interpolate(
+                    laterals[i], size=prev_shape, **self.upsample_cfg)
+
+        # build outputs
+        # part 1: from original levels
+        outs = [
+            self.fpn_convs[i](laterals[i]) for i in range(used_backbone_levels)
+        ]
+        # part 2: add extra levels
+        if self.num_outs > len(outs):
+            # use max pool to get more levels on top of outputs
+            # (e.g., Faster R-CNN, Mask R-CNN)
+            if not self.add_extra_convs:
+                for i in range(self.num_outs - used_backbone_levels):
+                    outs.append(F.max_pool2d(outs[-1], 1, stride=2))
+            # add conv layers on top of original feature maps (RetinaNet)
+            else:
+                if self.add_extra_convs == 'on_input':
+                    extra_source = inputs[self.backbone_end_level - 1]
+                elif self.add_extra_convs == 'on_lateral':
+                    extra_source = laterals[-1]
+                elif self.add_extra_convs == 'on_output':
+                    extra_source = outs[-1]
+                else:
+                    raise NotImplementedError
+                outs.append(self.fpn_convs[used_backbone_levels](extra_source))
+                for i in range(used_backbone_levels + 1, self.num_outs):
+                    if self.relu_before_extra_convs:
+                        outs.append(self.fpn_convs[i](F.relu(outs[-1])))
+                    else:
+                        outs.append(self.fpn_convs[i](outs[-1]))
+        return tuple(outs)
