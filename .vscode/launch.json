@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "TEST",
+            "type": "python",
+            "request": "launch",
+            "program": "/data1/chenyiqun/models/pedestrian-counting/tools/test.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "/data1/chenyiqun/models/pedestrian-counting/configs/atss/atss_r50_fpn_1x_coco.py", 
+                "/data1/chenyiqun/models/pedestrian-counting/work_dirs/atss_r50_fpn_1x_coco/latest.pth",
+                "--out", "results.pkl",
+                "--eval", "bbox", "miss_rate"
+            ]
+        },
+        {
+            "name": "TRAIN",
+            "type": "python",
+            "request": "launch",
+            "program": "/data1/chenyiqun/models/pedestrian-counting/tools/train.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "args": [
+                "/data1/chenyiqun/models/pedestrian-counting/configs/atss/atss_r50_fpn_1x_coco.py",
+                // "--out", "results.pkl",
+                // "--eval", "bbox", "segm"
+            ]
+        },
+    ]
+}
