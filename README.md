@@ -60,9 +60,9 @@ python tools/train.py configs/atss/atss_r50_fpn_1x_coco_head_dcd.py --cfg-option
 #### 2.1.1. configs/atss/atss_r50_fpn_1x_coco_head_dcd.py
 
 | Miss Rate                                  | baseline  | head_dcd_0.0025|head_dcd_0.005|head_dcd_0.00125
-|--------------------------------------------|-----------|--------------|
-| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    <b>24.95%    |26.73%|25.80%|
-| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>35.26%    |<b>35.44%|36.24%|
-| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.60%    |64.31%|62.24%|
-| Average Miss Rate  (MR) @ All              |  41.30%   |    <b>41.08%    |42.56%|42.08%|
+|--------------------------------------------|-----------|----------------|--------------|----------------|
+| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    <b>24.95%    |     26.73%  |      25.80%    |
+| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>35.26%    |  <b>35.44%  |      36.24%    |
+| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.60%    |     64.31%  |      62.24%    |
+| Average Miss Rate  (MR) @ All              |  41.30%   |    <b>41.08%    |     42.56%  |      42.08%    |
 
