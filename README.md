@@ -76,10 +76,10 @@ t可以用两种选择：
 
 | Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      | fpn_dcd<br>(all conv)|
 |--------------------------------------------|-----------|--------------|---------------------------------------|
-| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |<b>24.96%|
-| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |<b>34.61%|
-| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |<b>61.31%|
-| Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |41.57%|
+| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |<b>24.65%|
+| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |<b>34.28%|
+| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |<b>61.00%|
+| Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |41.02%|
  
 
 all conv    : 表示替换fpn中的所有卷积层
