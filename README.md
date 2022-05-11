@@ -74,12 +74,12 @@ t可以用两种选择：
 
 #### 2.1.1. configs/atss/atss_r50_dcd_fpn_1x_coco.py
 
-| Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      | fpn_dcd<br>(all conv)|
-|--------------------------------------------|-----------|--------------|---------------------------------------|
-| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |<b>24.65%|
-| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |<b>34.28%|
-| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |<b>61.00%|
-| Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |41.02%|
+| Miss Rate                                  | baseline  | fpn_dcd<br>(only smooth)      | fpn_dcd<br>(all conv)|dcd_mstrain_x3|
+|--------------------------------------------|-----------|--------------|---------------------------------------|--------------|
+| Average Miss Rate  (MR) @ Reasonable       |  25.01%   |    25.07%    |<b>24.65%|23.02%|
+| Average Miss Rate  (MR) @ ReasonableSmall  |  35.51%   |    <b>34.38%    |<b>34.28%|30.42%|
+| Average Miss Rate  (MR) @ ReasonableHeavy  |  61.97%   |    <b>61.20%    |<b>61.00%|58.83%|
+| Average Miss Rate  (MR) @ All              |  41.30%   |    41.48%    |41.02%|39.91%|
  
 
 all conv    : 表示替换fpn中的所有卷积层
