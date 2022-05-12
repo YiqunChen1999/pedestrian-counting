@@ -13,6 +13,8 @@
 
 ## 更新日志
 
+- 2022-05-12：更新了基于动态卷积的 Head 代码与实验结果（分支 `dconv`）。
+- 2022-05-11：更新了动态卷积与 FPN 的代码与实验结果（分支 `dev-dyconv`）。
 - 2022-05-04：增加了基本教程 [tutorial.md](./tutorial.md)。
 - 2022-05-01：增加了 DHD-Ped-campus 的 baselines（ATSS-Res50-1x，ATSS-Res50-mstrain-3x）。
 - 2022-04-30：更新了 [results.md](./results.md) 文档，所有实验结果均存放于此。
