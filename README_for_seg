@@ -1,4 +1,4 @@
-# Add Mask Head
+# Add mask head
 
 本文档更新了如何在ATSS中添加分割分支，基于mmdet的FCNMaskHead类
 
