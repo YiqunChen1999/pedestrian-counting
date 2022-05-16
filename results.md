@@ -21,18 +21,18 @@
 
 ### TJU-DHD-Ped-traffic
 
-| Model                | lr    | batch size | policy     | MR@R   | MR@S   | MR@RO  | MR@All |
-|----------------------|-------|------------|------------|--------|--------|--------|--------|
-| ATSS-Res50           | 0.005 | 16         | 1x         | 25.01% | 35.51% | 61.97% | 41.30% |
-| ATSS-Res50           | 0.005 | 16         | mstrain-3x | 23.03% | 30.34% | 59.58% | 38.79% |
-| ATSS-Res50-DyConvFPN (SmoothOnly) | 0.005 | 16         | 1x         | 25.07% | 34.38% | 61.20% | 41.48% |
-| ATSS-Res50-DyConvFPN (All) | 0.005 | 16         | 1x         | 24.65% | 34.28% | 61.00% | 41.02% |
-| ATSS-Res50-DyConvFPN (All) | 0.005 | 16         | mstrain-3x | 22.17% | 29.90% | 59.18% | 38.20% |
-| ATSS-Res50-DyConvHead | 0.0025 | 8         | 1x         | 24.95% | 35.26% | 61.60% | 41.08% |
-| ATSS-Res50-DyConvHead | 0.005 | 8         | 1x         | 26.73% | 35.44% | 64.31% | 42.56% |
-| ATSS-Res50-DyConvHead | 0.00125 | 8         | 1x         | 25.80% | 36.24% | 62.24% | 42.08% |
-| ATSS-Res101          | 0.005 | 16         | 1x         | 24.61% | 34.19% | 64.36% | 41.47% |
-| ATSS-Res101          | 0.005 | 16         | mstrain-3x | 23.06% | 30.92% | 61.12% | 39.14% |
+| Model                             | lr      | batch size | policy     | MR@R   | MR@S   | MR@RO  | MR@All |
+|-----------------------------------|---------|------------|------------|--------|--------|--------|--------|
+| ATSS-Res50                        | 0.005   | 16         | 1x         | 25.01% | 35.51% | 61.97% | 41.30% |
+| ATSS-Res50                        | 0.005   | 16         | mstrain-3x | 23.03% | 30.34% | 59.58% | 38.79% |
+| ATSS-Res50-DyConvFPN (SmoothOnly) | 0.005   | 16         | 1x         | 25.07% | 34.38% | 61.20% | 41.48% |
+| ATSS-Res50-DyConvFPN (All)        | 0.005   | 16         | 1x         | 24.65% | 34.28% | 61.00% | 41.02% |
+| ATSS-Res50-DyConvFPN (All)        | 0.005   | 16         | mstrain-3x | 22.17% | 29.90% | 59.18% | 38.20% |
+| ATSS-Res50-DyConvHead             | 0.0025  | 8          | 1x         | 24.95% | 35.26% | 61.60% | 41.08% |
+| ATSS-Res50-DyConvHead             | 0.005   | 8          | 1x         | 26.73% | 35.44% | 64.31% | 42.56% |
+| ATSS-Res50-DyConvHead             | 0.00125 | 8          | 1x         | 25.80% | 36.24% | 62.24% | 42.08% |
+| ATSS-Res101                       | 0.005   | 16         | 1x         | 24.61% | 34.19% | 64.36% | 41.47% |
+| ATSS-Res101                       | 0.005   | 16         | mstrain-3x | 23.06% | 30.92% | 61.12% | 39.14% |
 
 **注意：** 从实验日志来看，似乎 ATSS-Res101 存在过拟合的情况，其在验证集上的 MR 略呈 U 形。
 
@@ -174,12 +174,41 @@ CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=18181 tools/dist_train.sh configs/atss/atss_r1
 CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=18181 tools/dist_train.sh configs/atss/atss_r50_fpn_dcd_1x_dhd_ped_traffic.py 4 --cfg-options "data.samples_per_gpu=4 optimizer.lr=0.005"
 ```
 
-| Miss Rate                                  | baseline  | fpn_dcd (only smooth)    |
-|--------------------------------------------|-----------|--------------------------|
-| Average Miss Rate  (MR) @ Reasonable       | 25.01%    | 25.07%                   |
-| Average Miss Rate  (MR) @ ReasonableSmall  | 35.51%    | **34.38%**               |
-| Average Miss Rate  (MR) @ ReasonableHeavy  | 61.97%    | **61.20%**               |
-| Average Miss Rate  (MR) @ All              | 41.30%    | 41.48%                   |
+| Miss Rate                                  | baseline  | fpn_dcd (ALL) (1x) | fpn_dcd (ALL) (mstrain-3x) |
+|--------------------------------------------|-----------|---------------     |----------------------------|
+| Average Miss Rate  (MR) @ Reasonable       | 25.01%    | **24.65%**         | **24.65%**                 |
+| Average Miss Rate  (MR) @ ReasonableSmall  | 35.51%    | **34.28%**         | **34.28%**                 |
+| Average Miss Rate  (MR) @ ReasonableHeavy  | 61.97%    | **61.00%**         | **61.00%**                 |
+| Average Miss Rate  (MR) @ All              | 41.30%    | **41.02%**         | **41.02%**                 |
+
+### 1.6. configs/atss/atss_r50_fpn_dcd_3x_dhd_ped_traffic.py
+
+**注意：** 详细说明请见 [dev-dyconv](https://github.com/YiqunChen1999/pedestrian-counting/tree/dev-dyconv) 分支。
+
+训练命令：[配置文件未给出]
+
+| Miss Rate                                  | baseline  | fpn_dcd (ALL) (3x) |
+|--------------------------------------------|-----------|--------------------|
+| Average Miss Rate  (MR) @ Reasonable       | 25.01%    | **22.17%**         |
+| Average Miss Rate  (MR) @ ReasonableSmall  | 35.51%    | **29.90%**         |
+| Average Miss Rate  (MR) @ ReasonableHeavy  | 61.97%    | **59.18%**         |
+| Average Miss Rate  (MR) @ All              | 41.30%    | **38.20%**         |
+
+### 1.7. configs/atss/atss_r50_fpn_1x_coco_head_dcd.py
+
+**注意：** 详细说明请见 [dconv](https://github.com/YiqunChen1999/pedestrian-counting/tree/dconv) 分支。
+
+训练命令：
+```bash
+CUDA_VISIBLE_DEVICES=4,5,6,7 PORT=19197 tools/dist_train.sh configs/atss/atss_r50_fpn_1x_coco_head_dcd.py 4 --cfg-options "data.samples_per_gpu=2 optimizer.lr=0.0025"
+```
+
+| Miss Rate                                  | baseline  | atss_head_dcd (1x) |
+|--------------------------------------------|-----------|--------------------|
+| Average Miss Rate  (MR) @ Reasonable       | 25.01%    | **24.95%**         |
+| Average Miss Rate  (MR) @ ReasonableSmall  | 35.51%    | **35.26%**         |
+| Average Miss Rate  (MR) @ ReasonableHeavy  | 61.97%    | **61.60%**         |
+| Average Miss Rate  (MR) @ All              | 41.30%    | **41.08%**         |
 
 ## 2. TJU-DHD-Pedestrian-Campus
 

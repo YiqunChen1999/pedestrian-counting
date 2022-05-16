@@ -13,6 +13,7 @@
 
 ## 更新日志
 
+- 2022-05-16：增加了动态卷积版的 Head 的配置文件 [atss_r50_fpn_1x_coco_head_dcd.py](configs/atss/atss_r50_fpn_1x_coco_head_dcd.py)。
 - 2022-05-12：更新了基于动态卷积的 Head 代码与实验结果（分支 `dconv`）。
 - 2022-05-11：更新了动态卷积与 FPN 的代码与实验结果（分支 `dev-dyconv`）。
 - 2022-05-04：增加了基本教程 [tutorial.md](./tutorial.md)。
