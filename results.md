@@ -272,7 +272,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 PORT=19191 tools/dist_train.sh configs/atss/atss_r5
 
 ## 3. 其他数据集
 ### 3.1. 准备数据集
-下载ucas-campus数据集到`[DATA_ROOT]`并解压，完成后项目目录应组织为：
+下载ucas-campus数据集到`[DATA_ROOT]`并解压，完成后目录应组织为：
 ```bash
 data/ucas-campus
     |_ annotations
@@ -286,7 +286,7 @@ data/ucas-campus
 ```bash
 /configs/_base_/datasets/ucas_campus.py
 ```
-定义了数据集路径等信息，只用于测试
+定义了数据集路径等信息，只用于测试。
 使用该数据集进行测试时，需先在对应的配置文件中指定，如
 ```bash
 _base_ = [
@@ -297,7 +297,7 @@ _base_ = [
 ```
 ### 3.3. 测试
 
-如：
+如
 ```bash
 python tools/test.py configs/atss/atss_r50_dcd_fpn_1x_coco.py work_dirs/atss_r50_dcd_fpn_1x_coco/epoch_12.pth --eval bbox miss_rate  --gpu-id 3 --show-dir ./results/atss_r50_dcd_fpn_1x_coco
 ```
@@ -370,4 +370,9 @@ python tools/test.py configs/atss/atss_r50_dcd_fpn_1x_coco.py work_dirs/atss_r50
 | Average Recall     (AR) | IoU=0.50:0.95 | area=medium | maxDets=100 | 0.538 |
 | Average Recall     (AR) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.688 |
 
+可视化结果如下，左上角数字表示该图片中检测到的行人数量，更多结果可见[./results](./results)
+![image](./resuls/atss_r50_dcd_fpn_1x_coco/2.jpg)
+![image](./resuls/atss_r50_dcd_fpn_1x_coco/6.jpg)
+![image](./resuls/atss_r50_dcd_fpn_1x_coco/14.jpg)
+![image](./resuls/atss_r50_dcd_fpn_1x_coco/15.jpg)
 
