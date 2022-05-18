@@ -371,8 +371,8 @@ python tools/test.py configs/atss/atss_r50_dcd_fpn_1x_coco.py work_dirs/atss_r50
 | Average Recall     (AR) | IoU=0.50:0.95 | area= large | maxDets=100 | 0.688 |
 
 可视化结果如下，左上角数字表示该图片中检测到的行人数量，更多结果可见[./results](./results)
-![image](./resuls/atss_r50_dcd_fpn_1x_coco/2.jpg)
-![image](./resuls/atss_r50_dcd_fpn_1x_coco/6.jpg)
-![image](./resuls/atss_r50_dcd_fpn_1x_coco/14.jpg)
-![image](./resuls/atss_r50_dcd_fpn_1x_coco/15.jpg)
+![image](./results/atss_r50_dcd_fpn_1x_coco/2.jpg)
+![image](./results/atss_r50_dcd_fpn_1x_coco/6.jpg)
+![image](./results/atss_r50_dcd_fpn_1x_coco/14.jpg)
+![image](./results/atss_r50_dcd_fpn_1x_coco/15.jpg)
 
