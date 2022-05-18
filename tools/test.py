@@ -265,6 +265,10 @@ def main():
             if args.work_dir is not None and rank == 0:
                 mmcv.dump(metric_dict, json_file)
 
+            # add
+            if args.show_dir:  
+                print(args.show_dir)
+                dataset.count_and_show(outputs, args.show_dir, args.show_score_thr, **kwargs)
 
 if __name__ == '__main__':
     main()

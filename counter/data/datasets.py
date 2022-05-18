@@ -23,7 +23,7 @@ from mmdet.datasets.api_wrappers import COCO, COCOeval
 
 from counter.utils.eval_MR_multisetup import COCOeval as CityPersonsCOCOeval
 from counter.utils.coco import COCO as CityPersonsCOCO
-
+import cv2
 
 @DATASETS.register_module()
 class PedestrianDataset(CocoDataset):
@@ -81,6 +81,20 @@ class PedestrianDataset(CocoDataset):
             num_preds_per_img[idx] = self._count_num_bboxes(idx, predictions)
         return num_preds_per_img
 
+    def count_and_show(self, results: List[Union[List, Tuple]], show_dir, show_thres,  # add new func
+        jsonfile_prefix: str=None):
+        result_files, tmp_dir = self.format_results(results, jsonfile_prefix)
+        predictions = mmcv.load(result_files["bbox"])
+        num_preds_per_img = {}
+        img_ids = set([p["image_id"] for p in predictions])
+        for idx in img_ids:
+            info = self.coco.load_imgs(idx)[0]
+            print(info['file_name'])
+            num_preds_per_img[idx] = sum([idx == p["image_id"] and p["score"] > show_thres  for p in predictions])
+            img = cv2.imread(show_dir + "/" + info['file_name'])
+            cv2.putText(img, str(num_preds_per_img[idx]), (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 3, cv2.LINE_AA)
+            cv2.imwrite(show_dir + "/" + info['file_name'], img)
+            
     def calc_miss_rate(
         self, 
         results: List[Union[List, Tuple, Dict]], 
