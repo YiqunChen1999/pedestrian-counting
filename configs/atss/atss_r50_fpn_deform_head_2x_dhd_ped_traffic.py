@@ -1,7 +1,7 @@
 _base_ = [
     '../_base_/datasets/dhd_ped_traffic.py',
     '../_base_/models/atss_r50_fpn_deform_head.py',
-    '../_base_/schedules/schedule_1x.py', 
+    '../_base_/schedules/schedule_2x.py', 
     '../_base_/default_runtime.py', 
 ]
 # optimizer
