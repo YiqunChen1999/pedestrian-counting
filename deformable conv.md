@@ -14,10 +14,10 @@
 
 | Miss Rate                                  | cls | cls+reg      | cls+reg+centerness|
 |--------------------------------------------|-----------|--------------|---------------------------------------|
-| Average Miss Rate  (MR) @ Reasonable       |  /   |    44.44%    |58.80%|
-| Average Miss Rate  (MR) @ ReasonableSmall  |  /   |    59.84%    |69.62%|
-| Average Miss Rate  (MR) @ ReasonableHeavy  |  /   |    71.32%    |76.83%|
-| Average Miss Rate  (MR) @ All              |  /   |    57.66%    |68.17%|
+| Average Miss Rate  (MR) @ Reasonable       |  /   |    39.44%    |53.80%|
+| Average Miss Rate  (MR) @ ReasonableSmall  |  /   |    54.84%    |64.62%|
+| Average Miss Rate  (MR) @ ReasonableHeavy  |  /   |    66.32%    |71.83%|
+| Average Miss Rate  (MR) @ All              |  /   |    52.66%    |63.17%|
 
 
 由于可变形卷积对每一个3x3卷积核都要额外学习8个偏置参数，所以只加在最后几层，对应self.cls、self.reg、self.centerness
