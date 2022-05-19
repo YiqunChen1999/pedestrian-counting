@@ -6,9 +6,9 @@ from mmcv.runner import force_fp32
 
 from mmdet.core import (anchor_inside_flags, build_assigner, build_sampler,
                         images_to_levels, multi_apply, reduce_mean, unmap)
-from ..builder import HEADS, build_loss
-from .anchor_head import AnchorHead
-from ..roi_heads.mask_heads.fcn_mask_head import FCNMaskHead
+from mmdet.models.builder import HEADS, build_loss
+from mmdet.models.dense_heads.anchor_head import AnchorHead
+# from ..roi_heads.mask_heads.fcn_mask_head import FCNMaskHead
 from .deform_conv_v2 import DeformConv2d
 
 @HEADS.register_module()
