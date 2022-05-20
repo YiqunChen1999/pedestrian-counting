@@ -1,6 +1,3 @@
-custom_imports = dict(
-    imports=['counter.models.fpn_dcd'],
-    allow_failed_imports=False)
 model = dict(
     type='ATSS',
     backbone=dict(

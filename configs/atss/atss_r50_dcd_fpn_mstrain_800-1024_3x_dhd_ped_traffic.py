@@ -1,5 +1,6 @@
 _base_ = [
-    './atss_r50_fpn_1x_dhd_ped_traffic.py'
+    '../_base_/models/atss_r50_fpn.py',
+    '../common/mstrain_3x_dhd_ped_traffic.py', 
 ]
 model=dict(
     neck=dict(
@@ -16,3 +17,4 @@ model=dict(
     )
 )
 find_unused_parameters = True
+optimizer = dict(type='SGD', lr=0.005, momentum=0.9, weight_decay=0.0001)
