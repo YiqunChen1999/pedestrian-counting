@@ -25,10 +25,6 @@
 - 2022-04-28：更新 README 文件并新增 mmdet 版本警告。
 - 2022-04-27：发布 baseline 与代码使用说明。
 
-## TODO 
-
-- [x] 增加 DHD-Ped-campus 子集的 baseline。
-
 ## 1. 如何开始
 
 ### 1.1. 将本项目代码下载到服务器
@@ -210,6 +206,101 @@ python tools/test.py configs/atss/atss_r50_fpn_1x_coco.py work_dirs/atss_r50_fpn
 
 - TJU-DHD 原始论文中给出的训练时与测试时的图像的分辨率均设为 `2048 x 1024`，与 `RetinaNet, FCOS, ATSS` 等的原始配置都不一样。如果使用原始配置，会导致 `miss_rate` 很不正常（小目标不能被识别）。
 - TJU-DHD 原始论文给出 `RetinaNet` 的学习率设置为 `0.005`，是默认参数的一半，由于 `RetinaNet` 衍生版的配置一般与 `RetinaNet` 相同，故 `FCOS, ATSS` 一般而言也应该与 `RetinaNet` 保持一致（学习率修改为 0.005）。
+
+代码与文件按照如下方式组织：
+```
+.tools
+    |_ dist_test.sh
+    |_ dist_train.sh
+    |_ test.py
+    |_ train.py
+    |_ ...
+.vscode
+    |_ launch.json 
+configs
+    |_ _base_
+        |_ datasets
+            |_ dhd_ped_campus.py
+            |_ dhd_ped_traffic.py
+            |_ ...
+        |_ models
+            |_ atss_r50_fpn_deform_head.py
+            |_ atss_r50_fpn.py
+        |_ schedules
+            |_ schedule_1x.py
+            |_ schedule_2x.py
+            |_ schedule_3x.py
+            |_ schedule_4x.py
+            |_ schedule_6x.py
+            |_ ...
+        |_ default_runtime.py
+    |_ atss
+        |_ atss_r50_fpn_1x_coco_head_dcd.py
+        |_ atss_r50_fpn_1x_dhd_ped_campus.py
+        |_ atss_r50_fpn_1x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_dcd_1x_dhd_ped_campus.py
+        |_ atss_r50_fpn_dcd_1x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_deform_head_1x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_deform_head_2x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_deform_head_3x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_deform_head_4x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_deform_head_6x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_deform_head_mstrain_800-1024_3x_dhd_ped_traffic.py
+        |_ atss_r50_fpn_mstrain_800-1024_3x_dhd_ped_campus.py
+        |_ atss_r50_fpn_mstrain_800-1024_3x_dhd_ped_traffic.py
+        |_ atss_r101_fpn_1x_dhd_ped_campus.py
+        |_ atss_r101_fpn_1x_dhd_ped_traffic.py
+        |_ atss_r101_fpn_mstrain_800-1024_3x_dhd_ped_campus.py
+        |_ atss_r101_fpn_mstrain_800-1024_3x_dhd_ped_traffic.py
+    |_ common 
+    |_ ...
+counter
+    |_ data
+        |_ datasets.py
+    |_ models
+        |_ atss_head_dcd.py
+        |_ atss_head_deform.py
+        |_ deform_conv_v2.py
+        |_ fpn_dcd.py
+    |_ utils
+        |_ coco.py
+        |_ eval_demo.py
+        |_ eval_MR_multisetup.py
+    |_ main.py
+tools
+    |_ dist_test.sh
+    |_ dist_train.sh
+    |_ test.py
+    |_ train.py
+    |_ ...
+.gitignore
+README.md
+data
+requirements.txt
+results.md
+setup.py
+tutorial.md
+```
+其中，各个文件/文件夹说明如下：
+- `.tools` 存放 `mmdetection==2.23.0` 的启动脚本，相关说明见 `tools`；
+- `.vscode` 可忽略；
+- `configs` 下存放相关配置文件，其中：
+    - `_base_` 下存放基础的配置文件，包括数据集、模型以及训练策略；
+    - `atss` 下存放着用于实验中直接调用的配置文件，即，实验中所有模型配置均来自于该文件夹，其中，文件名含有 `dhd_ped_traffic` 表示使用的数据集为 `TJU-DHD-Ped-traffic`，文件名含有 `dhd_ped_campus` 表示使用的数据集为 `TJU-DHD-Ped-campus`，文件名含有 `dcd_head` 表示动态卷积版的 `head` 的配置文件，文件名仅含有 `dcd` 表示动态卷积版的 `FPN`，文件名中含有 `mstrain` 表示多尺度训练策略，文件名含有 `deform` 表示可变形卷积版的 `head`，文件名中 `nx` 表示训练轮数为 `baseline` 的 `n` 倍；
+    - `common` 用于存放多尺度训练策略的配置文件；
+- `counter` 存放开发时增加的自定义代码，包含：
+    - `data` TJU-DHD-Ped 数据集的读入读出代码以及性能评价函数；
+    - `models` 存放实验中使用的模型：
+        - `atss_head_dcd.py` 存放动态卷积版本的 `head`；
+        - `atss_head_deform.py` 存放可变形卷积版本的 `head`；
+        - `deform_conv_v2.py` 存放可变形卷积模块；
+        - `fpn_dcd.py` 存放动态卷积模块以及动态卷积版的 `FPN`；
+    - `utils` 存放着用于计算 `Miss Rate` 的第三方代码；
+- `tools` 存放着训练和测试的相关脚本工具，具体使用方法参见 [MMDetection 文档](https://mmdetection.readthedocs.io/zh_CN/latest/index.html)；
+- `results.md` 存放着所有模型的实验结果；
+- `requirements.txt` 存放着本项目的依赖的第三方库；
+- `setup.py` 为将本代码安装到本地环境的脚本；
+- `tutorial.md` 存放着快速入门教程；
 
 ## 4. 进一步开发前必读
 
